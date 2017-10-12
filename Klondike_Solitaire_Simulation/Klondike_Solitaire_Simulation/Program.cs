@@ -23,7 +23,8 @@ namespace Onderzoeksmethoden
 
             // TODO: shuffle deck
 
-
+            foreach (Card c in deck)
+                Console.WriteLine(c.suit + " " + c.rank);
 
             Console.ReadLine();
         }
