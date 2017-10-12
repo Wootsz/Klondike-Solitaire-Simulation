@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static Onderzoeksmethoden.Suit;
+using static Onderzoeksmethoden.Rank;
+
+namespace Onderzoeksmethoden
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            RNG random = new RNG();
+
+            // Make a deck with every card
+            List<Card> deck = new List<Card>();
+            for (int i = 0; i < Enum.GetNames(typeof(Suit)).Length; i++)
+                for (int j = 0; j < Enum.GetNames(typeof(Rank)).Length; j++)
+                    deck.Add(new Card((Suit)i, (Rank)j));
+
+            // TODO: shuffle deck
+
+
+
+            Console.ReadLine();
+        }
+    }
+}
