@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Onderzoeksmethoden.Suit;
-using static Onderzoeksmethoden.Rank;
+using static Klondike_Solitaire_Simulation.Suit;
+using static Klondike_Solitaire_Simulation.Rank;
 
-namespace Onderzoeksmethoden
+namespace Klondike_Solitaire_Simulation
 {
     public enum Suit { Spades, Hearts, Clubs, Diamonds }
     public enum Rank { A, _2, _3, _4, _5, _6, _7, _8, _9, _10, J, Q, K }
