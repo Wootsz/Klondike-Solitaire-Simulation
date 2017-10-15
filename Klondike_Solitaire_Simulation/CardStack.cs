@@ -39,6 +39,14 @@ namespace Klondike_Solitaire_Simulation
 			return cards.Count == 0;
 		}
 
+        /// <summary>
+        /// Counts the cards in the card stack
+        /// </summary>
+        /// <returns>The amount of cards</returns>
+        public int Count() {
+            return cards.Count;
+        }
+
 		/// <summary>
 		/// Shuffles the stack.
 		/// </summary>
