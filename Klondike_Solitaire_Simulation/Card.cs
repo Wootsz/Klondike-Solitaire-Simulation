@@ -8,14 +8,16 @@ using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
-	public enum Suit {
+	public enum Suit
+	{
 		Spades,
 		Hearts,
 		Clubs,
 		Diamonds
 	}
 
-	public enum Rank {
+	public enum Rank
+	{
 		A,
 		_2,
 		_3,
@@ -31,25 +33,28 @@ namespace Klondike_Solitaire_Simulation
 		K
 	}
 
-    class Card
-    {
-        public Suit suit;
-        public Rank rank;
-        public Card attached;
+	public class Card
+	{
+		public Suit suit;
+		public Rank rank;
+		public Card attached;
 
-        public Card(Suit suit, Rank rank)
-        {
-            this.suit = suit;
-            this.rank = rank;
-        }
+		public Card(Suit suit, Rank rank)
+		{
+			this.suit = suit;
+			this.rank = rank;
+		}
 
-        public Card TopCard()
-        {
-            if (attached == null)
-                return this;
-            else
-                return attached.TopCard();
-        }
-
-    }
+		public Card TopCard()
+		{
+			if (attached == null)
+			{
+				return this;
+			}
+			else
+			{
+				return attached.TopCard();
+			}
+		}
+	}
 }

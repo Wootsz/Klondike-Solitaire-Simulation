@@ -8,17 +8,17 @@ using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
-	class Program
+	public class Program
 	{
+		private static RNG random;
+
 		static void Main(string[] args)
 		{
 			int iterations = 1;
 
             for (int iteration = 0; iteration < iterations; iteration++)
             {
-
-                RNG random = new RNG();
-                State init_state = new State(random);
+                State init_state = new State();
                 
 
 				// TODO: shuffle deck
