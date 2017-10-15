@@ -32,6 +32,14 @@ namespace Klondike_Solitaire_Simulation
 		}
 
 		/// <summary>
+		/// Checks if the stack is empty.
+		/// </summary>
+		/// <returns>Whether the stack is empty.</returns>
+		public bool IsEmpty() {
+			return cards.Count == 0;
+		}
+
+		/// <summary>
 		/// Shuffles the stack.
 		/// </summary>
 		public void Shuffle()
@@ -63,6 +71,14 @@ namespace Klondike_Solitaire_Simulation
 			cards.Remove(cards.Last());
 
 			return result;
+		}
+
+		/// <summary>
+		/// Peeks at the top card.
+		/// </summary>
+		/// <returns>The top card.</returns>
+		public Card Peek() {
+			return cards.Last();
 		}
 
 		/// <summary>

@@ -16,15 +16,10 @@ namespace Klondike_Solitaire_Simulation
 
             for (int iteration = 0; iteration < iterations; iteration++)
             {
+				// Initialize the game state
                 State init_state = new State();
-                
-
-				// TODO: shuffle deck
-
-                
-
-
             }
+			
             Console.ReadLine();
         }
     }
