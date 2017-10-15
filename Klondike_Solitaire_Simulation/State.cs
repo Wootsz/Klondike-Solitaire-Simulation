@@ -11,6 +11,7 @@ namespace Klondike_Solitaire_Simulation
 	public class State
 	{
 		public List<Card> deck = GenerateStandardDeck();
+        List<Card> ShuffledDeck = ShuffleDeck();
 		int no_of_tableaus = 7;
 
 		public Stack<Card> stock = new Stack<Card>();
@@ -68,9 +69,8 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// Shuffles a deck.
 		/// </summary>
-		public void ShuffleDeck()
+		public static List<Card> ShuffleDeck()
 		{
-            List<Card> ShuffledDeck = new List<Card>();
             RNG random = new RNG();
             while(deck.Count > 0){
                 int randomCard = random(0, deck.Count);
