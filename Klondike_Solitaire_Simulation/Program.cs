@@ -10,8 +10,6 @@ namespace Klondike_Solitaire_Simulation
 {
 	public class Program
 	{
-		private static RNG random;
-
 		static void Main(string[] args)
 		{
 			int iterations = 1;

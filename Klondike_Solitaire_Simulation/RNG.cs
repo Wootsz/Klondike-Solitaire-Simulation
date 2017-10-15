@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation
 {
-	public static class RNG {
+	public class RNG {
 		private const int a = 2416;
 		private const int c = 374441;
 		private const int m = 1771875;
@@ -14,13 +14,13 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The current seed.
 		/// </summary>
-		private static int current_seed;
+		private int current_seed;
 
 		/// <summary>
 		/// Creates a new random generator.
 		/// </summary>
 		/// <param name="seed">The given seed.</param>
-		static RNG(int seed = -1)
+		public RNG(int seed = -1)
 		{
 			// Check if a seed has been given
 			if (seed < 0)
