@@ -70,7 +70,13 @@ namespace Klondike_Solitaire_Simulation
 		/// </summary>
 		public void ShuffleDeck()
 		{
-			
+            List<Card> ShuffledDeck = new List<Card>();
+            RNG random = new RNG();
+            while(deck.Count > 0){
+                int randomCard = random(0, deck.Count);
+                ShuffledDeck.Add(deck[randomCard]);
+                deck.RemoveAt(randomCard);
+            }
 		}
 
 		/// <summary>
