@@ -15,11 +15,20 @@ namespace Klondike_Solitaire_Simulation
     {
         public Suit suit;
         public Rank rank;
+        public Card attached;
 
         public Card(Suit suit, Rank rank)
         {
             this.suit = suit;
             this.rank = rank;
+        }
+
+        public Card TopCard()
+        {
+            if (attached == null)
+                return this;
+            else
+                return attached.TopCard();
         }
 
     }
