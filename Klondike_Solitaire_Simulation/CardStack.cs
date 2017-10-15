@@ -44,13 +44,17 @@ namespace Klondike_Solitaire_Simulation
 		/// </summary>
 		public void Shuffle()
 		{
+			List<Card> newCards = new List<Card>();
+
 			while (cards.Count > 0)
 			{
 				int randomCard = Utility.random.Next(0, cards.Count);
 
-				cards.Add(cards[randomCard]);
+				newCards.Add(cards[randomCard]);
 				cards.RemoveAt(randomCard);
 			}
+
+			cards = newCards;
 		}
 
 		/// <summary>
@@ -91,5 +95,11 @@ namespace Klondike_Solitaire_Simulation
 				otherStack.Push(Pop());
 			}
 		}
+
+		/// <summary>
+		/// Gets the card stack as a string.
+		/// </summary>
+		/// <returns>The card stack as a string.</returns>
+		public override string ToString() => String.Join(", ", cards);
 	}
 }

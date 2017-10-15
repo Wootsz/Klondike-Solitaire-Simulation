@@ -12,14 +12,9 @@ namespace Klondike_Solitaire_Simulation
 	public class State
 	{
 		/// <summary>
-		/// The current deck.
-		/// </summary>
-		public CardStack deck = CardStack.GenerateStandardDeck();
-
-		/// <summary>
 		/// The cards left in the stock.
 		/// </summary>
-		public CardStack stock = new CardStack();
+		public CardStack stock = CardStack.GenerateStandardDeck();
 
 		/// <summary>
 		/// The current waste (cards that can be moved to tableaus).
@@ -41,17 +36,14 @@ namespace Klondike_Solitaire_Simulation
 		/// </summary>
 		public State()
 		{
-			// Shuffle the deck
-			deck.Shuffle();
+			// Shuffle the stock
+			stock.Shuffle();
 
 			// Fill tableaus
 			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
 			{
-				deck.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1);
+				stock.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1);
 			}
-
-			// Whatever's left, goes into the stock
-			stock = deck;
 		}
 
 		/// <summary>
@@ -100,12 +92,24 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>The current state as card string.</returns>
 		public override string ToString()
 		{
-			string output = "";
+			string result = "";
 
-			// Output deck
-			output += "Deck: " + String.Join(", ", deck);
+			// Output stacks
+			result += "Stock: " + stock.ToString() + "\n";
 
-			return output;
+			result += "Waste: " + waste.ToString() + "\n";
+
+			foreach (CardStack foundation in foundations) {
+				result += "Foundation: " + foundation.ToString() + "\n";
+			}
+
+			foreach (CardStack tableau in tableaus) {
+				result += "Tableau: " + tableau.ToString() + "\n";
+			}
+
+			result += "\n";
+
+			return result;
 		}
 	}
 }

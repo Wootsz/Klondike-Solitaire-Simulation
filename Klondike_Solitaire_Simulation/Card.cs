@@ -56,5 +56,7 @@ namespace Klondike_Solitaire_Simulation
 				return attached.TopCard();
 			}
 		}
+
+		public override string ToString() => suit.ToString() + rank.ToString();
 	}
 }

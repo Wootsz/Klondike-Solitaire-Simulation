@@ -12,12 +12,16 @@ namespace Klondike_Solitaire_Simulation
 	{
 		static void Main(string[] args)
 		{
+			Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
+
 			int iterations = 1;
 
             for (int iteration = 0; iteration < iterations; iteration++)
             {
 				// Initialize the game state
-                State init_state = new State();
+                State state = new State();
+
+				Console.WriteLine(state.ToString());
             }
 			
             Console.ReadLine();
