@@ -35,16 +35,20 @@ namespace Onderzoeksmethoden
             return i;
         }
 
-        /// <summary>
-        /// Returns a 'random' number between 0 and 1
-        /// </summary>
-        public float Next() { return GetNumber() / 1000000; }
+		/// <summary>
+		/// Returns a 'random' number between 0 and 1
+		/// </summary>
+		public float Next() {
+			return GetNumber() / 1000000;
+		}
 
-        /// <summary>
-        /// Returns a 'random' number between 0 and max
-        /// </summary>
-        /// <param name="max">Exclusive</param>
-        /// <returns> 0 <= number < max</returns>
-        public int Next(int max) { return GetNumber() % max; }
+		/// <summary>
+		/// Returns a 'random' number between 0 and max
+		/// </summary>
+		/// <param name="max">Exclusive</param>
+		/// <returns> 0 <= number < max</returns>
+		public int Next(int max) {
+			return GetNumber() % max;
+		}
     }
 }
