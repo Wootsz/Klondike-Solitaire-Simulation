@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Onderzoeksmethoden.Suit;
-using static Onderzoeksmethoden.Rank;
+using static Klondike_Solitaire_Simulation.Suit;
+using static Klondike_Solitaire_Simulation.Rank;
 
-namespace Onderzoeksmethoden
+namespace Klondike_Solitaire_Simulation
 {
 	public enum Suit {
 		Spades,
@@ -35,11 +35,21 @@ namespace Onderzoeksmethoden
     {
         public Suit suit;
         public Rank rank;
+        public Card attached;
 
         public Card(Suit suit, Rank rank)
         {
             this.suit = suit;
             this.rank = rank;
         }
+
+        public Card TopCard()
+        {
+            if (attached == null)
+                return this;
+            else
+                return attached.TopCard();
+        }
+
     }
 }

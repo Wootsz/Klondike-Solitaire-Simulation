@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Onderzoeksmethoden.Suit;
-using static Onderzoeksmethoden.Rank;
+using static Klondike_Solitaire_Simulation.Suit;
+using static Klondike_Solitaire_Simulation.Rank;
 
-namespace Onderzoeksmethoden
+namespace Klondike_Solitaire_Simulation
 {
 	class Program
 	{
@@ -14,28 +14,20 @@ namespace Onderzoeksmethoden
 		{
 			int iterations = 1;
 
-			for (int iteration = 0; iteration < iterations; iteration++)
-			{
-				RNG random = new RNG();
+            for (int iteration = 0; iteration < iterations; iteration++)
+            {
 
-				// Make a deck with every card
-				List<Card> deck = new List<Card>();
-				for (int i = 0; i < Enum.GetNames(typeof(Suit)).Length; i++)
-				{
-					for (int j = 0; j < Enum.GetNames(typeof(Rank)).Length; j++)
-					{
-						deck.Add(new Card((Suit)i, (Rank)j));
-					}
-				}
+                RNG random = new RNG();
+                State init_state = new State(random);
+                
 
 				// TODO: shuffle deck
 
-				foreach (Card c in deck)
-				{
-					Console.WriteLine(c.suit + " " + c.rank);
-				}
-			}
-			Console.ReadLine();
-		}
-	}
+                
+
+
+            }
+            Console.ReadLine();
+        }
+    }
 }

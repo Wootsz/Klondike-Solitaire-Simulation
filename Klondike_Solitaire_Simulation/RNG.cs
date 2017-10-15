@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Onderzoeksmethoden
+namespace Klondike_Solitaire_Simulation
 {
     class RNG
     {
