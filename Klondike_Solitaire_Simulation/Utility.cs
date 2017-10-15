@@ -8,6 +8,6 @@ namespace Klondike_Solitaire_Simulation
 {
 	static class Utility
 	{
-		private static Random random = new Random();
+		public static Random random = new Random();
 	}
 }

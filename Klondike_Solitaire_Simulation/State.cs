@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,73 +11,47 @@ namespace Klondike_Solitaire_Simulation
 {
 	public class State
 	{
-		public List<Card> deck = GenerateStandardDeck();
-        List<Card> ShuffledDeck = ShuffleDeck();
-		int no_of_tableaus = 7;
-
-		public Stack<Card> stock = new Stack<Card>();
-        public Stack<Card> waste = new Stack<Card>();
-		public Stack<Card> foundation_diamonds = new Stack<Card>();
-		public Stack<Card> foundation_spades = new Stack<Card>();
-		public Stack<Card> foundation_clubs = new Stack<Card>();
-		public Stack<Card> foundation_hearts = new Stack<Card>();
-		public List<Stack<Card>> tableaus = new List<Stack<Card>>();
+		/// <summary>
+		/// The current deck.
+		/// </summary>
+		public CardStack deck = CardStack.GenerateStandardDeck();
 
 		/// <summary>
-		/// Generates a default deck with all 52 cards.
+		/// The cards left in the stock.
 		/// </summary>
-		/// <returns>A standard deck.</returns>
-		public static List<Card> GenerateStandardDeck()
-		{
-			List<Card> result = new List<Card>();
+		public CardStack stock = new CardStack();
 
-			// Make a deck with every card
-			for (int i = 0; i < Enum.GetNames(typeof(Suit)).Length; i++)
-			{
-				for (int j = 0; j < Enum.GetNames(typeof(Rank)).Length; j++)
-				{
-					result.Add(new Card((Suit)i, (Rank)j));
-				}
-			}
+		/// <summary>
+		/// The current waste (cards that can be moved to tableaus).
+		/// </summary>
+        public CardStack waste = new CardStack();
 
-			return result;
-		}
+		/// <summary>
+		/// The foundations where the final piles can be placed.
+		/// </summary>
+		public List<CardStack> foundations = Enumerable.Repeat(new CardStack(), 4).ToList();
+		
+		/// <summary>
+		/// The actual game stacks where the cards are moved to and from.
+		/// </summary>
+		public List<CardStack> tableaus = Enumerable.Repeat(new CardStack(), 7).ToList();
 
 		/// <summary>
 		/// Creates a new game state.
 		/// </summary>
 		public State()
 		{
-			ShuffleDeck();
+			// Shuffle the deck
+			deck.Shuffle();
 
 			// Fill tableaus
-			for (int i = 1; i <= no_of_tableaus; i++)
+			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
 			{
-				Stack<Card> s = new Stack<Card>();
-				for (int n = 0; n < i; n++)
-				{
-					s.Push(deck.First());
-					deck.RemoveAt(0);
-				}
-
-				tableaus.Add(s);
+				deck.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1);
 			}
 
 			// Whatever's left, goes into the stock
 			stock = deck;
-		}
-
-		/// <summary>
-		/// Shuffles a deck.
-		/// </summary>
-		public static List<Card> ShuffleDeck()
-		{
-            RNG random = new RNG();
-            while(deck.Count > 0){
-                int randomCard = random(0, deck.Count);
-                ShuffledDeck.Add(deck[randomCard]);
-                deck.RemoveAt(randomCard);
-            }
 		}
 
 		/// <summary>
