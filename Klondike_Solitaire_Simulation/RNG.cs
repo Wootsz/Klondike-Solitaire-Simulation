@@ -6,49 +6,69 @@ using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation
 {
-    public class RNG
-    {
-        private int a, c, m;
-        private int i;
-
-        public RNG(int seed = 0, bool is_seed = false)
-        {
-            a = 2416;
-            c = 374441;
-            m = 1771875;
-
-            if (!is_seed)
-            {
-                TimeSpan span = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0));
-                i = (int)span.TotalSeconds;
-            }
-            else
-                i = seed;
-        }
-
-        /// <summary>
-        /// Get the next 'random' number in line
-        /// </summary>
-        public int GetNumber()
-        {
-            i = (a * i + c) % m;
-            return i;
-        }
+	public class RNG {
+		private const int a = 2416;
+		private const int c = 374441;
+		private const int m = 1771875;
 
 		/// <summary>
-		/// Returns a 'random' number between 0 and 1
+		/// The current seed.
 		/// </summary>
-		public float Next() {
-			return GetNumber() / 1000000;
+		private int current_seed;
+
+		public RNG(int seed = -1)
+		{
+			if (seed < 0)
+			{
+				TimeSpan span = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0));
+				current_seed = (int)span.TotalSeconds;
+			}
+			else
+			{
+				current_seed = seed;
+			}
 		}
 
 		/// <summary>
-		/// Returns a 'random' number between 0 and max
+		/// Get the next 'random' number in line.
 		/// </summary>
-		/// <param name="max">Exclusive</param>
-		/// <returns> 0 <= number < max</returns>
-		public int Next(int max) {
-			return GetNumber() % max;
+		public int GetNumber()
+		{
+			// Recalculate the seed
+			current_seed = (a * current_seed + c) % m;
+
+			// Return the seed as number
+			return current_seed;
 		}
-    }
+
+		/// <summary>
+		/// Returns a 'random' number between 0 and 1.
+		/// </summary>
+		public float Next()
+		{
+			// Generate float number
+			return GetNumber() / 1000000.0f;
+		}
+
+		/// <summary>
+		/// Returns a 'random' number between 0 (inclusive) and max.
+		/// </summary>
+		/// <param name="max">The upper boundary (exclusive).</param>
+		/// <returns>A random number.</returns>
+		public int Next(int max)
+		{
+			return Next(0, max);
+		}
+
+		/// <summary>
+		/// Returns a 'random' number between min and max.
+		/// </summary>
+		/// <param name="min">The lower boundary (inclusive).</param>
+		/// <param name="max">The upper boundary (exclusive).</param>
+		/// <returns>A random number.</returns>
+		public int Next(int min, int max)
+		{
+			return min + GetNumber() % max;
+		}
+	}
 }
