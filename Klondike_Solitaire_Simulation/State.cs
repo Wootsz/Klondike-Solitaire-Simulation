@@ -13,7 +13,8 @@ namespace Klondike_Solitaire_Simulation
 		public List<Card> deck = GenerateStandardDeck();
 		int no_of_tableaus = 7;
 
-		public List<Card> stock = new List<Card>();
+		public Stack<Card> stock = new Stack<Card>();
+        public Stack<Card> waste = new Stack<Card>();
 		public Stack<Card> foundation_diamonds = new Stack<Card>();
 		public Stack<Card> foundation_spades = new Stack<Card>();
 		public Stack<Card> foundation_clubs = new Stack<Card>();
