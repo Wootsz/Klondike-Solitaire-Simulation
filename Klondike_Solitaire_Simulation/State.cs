@@ -229,7 +229,8 @@ namespace Klondike_Solitaire_Simulation
                 case stockChar:
                     card = nextState.waste.Pop();
                     // Move all cards from the waste back to the stock
-                    for(int wasteIndex = 0; wasteIndex < nextState.waste.Count(); wasteIndex++)
+                    int wasteLength = nextState.waste.Count();
+                    for(int wasteIndex = 0; wasteIndex < wasteLength; wasteIndex++)
                         nextState.stock.Push(nextState.waste.Pop());
                     break;
 
