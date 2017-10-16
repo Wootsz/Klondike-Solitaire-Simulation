@@ -18,19 +18,19 @@ namespace Klondike_Solitaire_Simulation
 
 	public enum Rank
 	{
-		A,
-		_2,
-		_3,
-		_4,
-		_5,
-		_6,
-		_7,
-		_8,
-		_9,
-		_10,
-		J,
-		Q,
-		K
+		Ace,
+		Two,
+		Three,
+		Four,
+		Five,
+		Six,
+		Seven,
+		Eight,
+		Nine,
+		Ten,
+		Jack,
+		Queen,
+		King
 	}
 
 	public class Card
@@ -57,6 +57,6 @@ namespace Klondike_Solitaire_Simulation
 			}
 		}
 
-		public override string ToString() => suit.ToString() + rank.ToString();
+		public override string ToString() => rank.ToString() + " of " + suit.ToString();
 	}
 }

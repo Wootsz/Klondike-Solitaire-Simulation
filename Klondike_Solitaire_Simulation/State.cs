@@ -24,12 +24,25 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The foundations where the final piles can be placed.
 		/// </summary>
-		public List<CardStack> foundations = Enumerable.Repeat(new CardStack(), 4).ToList();
+		public List<CardStack> foundations = new List<CardStack>() {
+			new CardStack(),
+			new CardStack(),
+			new CardStack(),
+			new CardStack()
+		};
 
 		/// <summary>
 		/// The actual game stacks where the cards are moved to and from.
 		/// </summary>
-		public List<CardStack> tableaus = Enumerable.Repeat(new CardStack(), 7).ToList();
+		public List<CardStack> tableaus = new List<CardStack>() {
+			new CardStack(),
+			new CardStack(),
+			new CardStack(),
+			new CardStack(),
+			new CardStack(),
+			new CardStack(),
+			new CardStack()
+		};
 
 		/// <summary>
 		/// Creates card new game state.
@@ -47,11 +60,11 @@ namespace Klondike_Solitaire_Simulation
 		}
 
 		/// <summary>
-		/// Check if you can place card card on b
+		/// Check if you can place the top card on the bottom card.
 		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
+		/// <param name="top">The top card.</param>
+		/// <param name="bottom">The bottom card.</param>
+		/// <returns>Whether the move is possible.</returns>
 		public bool IsValidMove(Card top, Card bottom)
 		{
 			if (top.rank == bottom.rank - 1)
@@ -70,14 +83,14 @@ namespace Klondike_Solitaire_Simulation
 		}
 
 		/// <summary>
-		/// Check if you can place card card on top of card foundation
+		/// Check if you can place card card on top of card foundation.
 		/// </summary>
-		/// <param name="card"></param>
-		/// <returns>The index of the foundation you can place card card on</returns>
+		/// <param name="card">The card to check.</param>
+		/// <returns>The index of the foundation you can place card card on.</returns>
 		public int FindFoundation(Card card)
 		{
 			for (int foundationIndex = 0; foundationIndex < foundations.Count; foundationIndex++) {
-				if (foundations[foundationIndex].IsEmpty() && card.rank == A || card.suit == foundations[foundationIndex].Peek().suit && card.rank == foundations[foundationIndex].Peek().rank - 1)
+				if (foundations[foundationIndex].IsEmpty() && card.rank == Ace || card.suit == foundations[foundationIndex].Peek().suit && card.rank == foundations[foundationIndex].Peek().rank - 1)
 				{
 					return foundationIndex;
 				}
