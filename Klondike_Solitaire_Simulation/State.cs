@@ -21,6 +21,12 @@ namespace Klondike_Solitaire_Simulation
         /// </summary>
         public CardStack waste = new CardStack();
 
+        //Heuristic Modifiers
+        public int foundationModifier = 1;
+        public int tableauModifier = 1;
+        public int wastModifier = 0;
+        public int stockModifier = 0;
+
 		/// <summary>
 		/// The foundations where the final piles can be placed.
 		/// </summary>
@@ -91,7 +97,7 @@ namespace Klondike_Solitaire_Simulation
         /// <summary>
         /// A list of all the previous state, so we don't end up in an infinite loop
         /// </summary>
-        public List<State> stateHistory;
+        public List<State> stateHistory = new List<State>();
 
         /// <summary>
         /// Makes a list of every possible future state, paired with its score, from the current state
@@ -106,7 +112,7 @@ namespace Klondike_Solitaire_Simulation
             for (int stockIndex = 0; stockIndex < stock.Count(); stockIndex++)
             {
                 // Turn over 3 cards at a time (if you're not at the end of the stock)
-                for(int turnOverIndex = 0; turnOverIndex < Math.Max(cardTurnOverAmount, stock.Count()); turnOverIndex++)
+                for(int turnOverIndex = 0; turnOverIndex < Math.Min(cardTurnOverAmount, stock.Count()); turnOverIndex++)
                 {
                     waste.Push(stock.Pop());
                 }
@@ -237,7 +243,7 @@ namespace Klondike_Solitaire_Simulation
                 case stockChar:
                     card = nextState.waste.Pop();
                     // Move all cards from the waste back to the stock
-                    for(int wasteIndex = 0; wasteIndex < nextState.stock.Count(); wasteIndex++)
+                    for(int wasteIndex = 0; wasteIndex < nextState.waste.Count(); wasteIndex++)
                         nextState.stock.Push(nextState.waste.Pop());
                     break;
 
@@ -267,7 +273,47 @@ namespace Klondike_Solitaire_Simulation
         /// <returns></returns>
         public int HeuristicFunction(State nextState)
         {
-            return 0;
+            int totalScore = 0;
+
+            //Stock score
+            totalScore += (nextState.stock.Count() * stockModifier);
+
+            //Waste score
+            totalScore += (nextState.waste.Count() * wastModifier);
+
+            //Tableau score
+            foreach(CardStack tableau in nextState.tableaus)
+            {
+                if (tableau.Count() > 0)
+                {
+                    Card card = tableau.Peek();
+                    int localScore = 1;
+                    while (true)
+                    {
+                        if (card.attached != null)
+                        {
+                            card = card.attached;
+                            localScore++;
+                            continue;
+                        }
+                        break;
+                    }
+
+                    totalScore += (localScore * foundationModifier);
+
+                }
+                
+            }
+
+            //Foundation score
+            foreach(CardStack foundation in nextState.foundations)
+            {
+                totalScore += (foundation.Count() * foundationModifier);
+            }
+
+
+            Console.WriteLine(totalScore);
+            return totalScore;
         }
         
     }
