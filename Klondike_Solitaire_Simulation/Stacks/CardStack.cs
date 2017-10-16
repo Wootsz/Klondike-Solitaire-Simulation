@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
-namespace Klondike_Solitaire_Simulation
+namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class CardStack
 	{

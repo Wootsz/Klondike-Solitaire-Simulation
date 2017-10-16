@@ -4,22 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Klondike_Solitaire_Simulation.Stacks;
 using static Klondike_Solitaire_Simulation.Suit;
 using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
-    public class State
-    {
-        /// <summary>
-        /// The cards left in the stock.
-        /// </summary>
-        public CardStack stock = CardStack.GenerateStandardDeck();
+	public class State
+	{
+		/// <summary>
+		/// The cards left in the stock.
+		/// </summary>
+		public CardStack stock = CardStack.GenerateStandardDeck();
 
-        /// <summary>
-        /// The current waste (cards that can be moved to tableaus).
-        /// </summary>
-        public CardStack waste = new CardStack();
+		/// <summary>
+		/// The current waste (cards that can be moved to tableaus).
+		/// </summary>
+		public CardStack waste = new CardStack();
 
         //Heuristic Modifiers
         public int foundationModifier = 1;
@@ -30,68 +31,68 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The foundations where the final piles can be placed.
 		/// </summary>
-		public List<CardStack> foundations = new List<CardStack>() {
-			new CardStack(),
-			new CardStack(),
-			new CardStack(),
-			new CardStack()
+		public List<FoundationCardStack> foundations = new List<FoundationCardStack>() {
+			new FoundationCardStack(),
+			new FoundationCardStack(),
+			new FoundationCardStack(),
+			new FoundationCardStack()
 		};
 
 		/// <summary>
 		/// The actual game stacks where the cards are moved to and from.
 		/// </summary>
-		public List<CardStack> tableaus = new List<CardStack>() {
-			new CardStack(),
-			new CardStack(),
-			new CardStack(),
-			new CardStack(),
-			new CardStack(),
-			new CardStack(),
-			new CardStack()
+		public List<TableauCardStack> tableaus = new List<TableauCardStack>() {
+			new TableauCardStack(),
+			new TableauCardStack(),
+			new TableauCardStack(),
+			new TableauCardStack(),
+			new TableauCardStack(),
+			new TableauCardStack(),
+			new TableauCardStack()
 		};
 
-        /// <summary>
-        /// Creates card new game state.
-        /// </summary>
-        public State()
-        {
-            // Shuffle the stock (the entire deck)
-            stock.Shuffle();
+		/// <summary>
+		/// Creates card new game state.
+		/// </summary>
+		public State()
+		{
+			// Shuffle the stock (the entire deck)
+			stock.Shuffle();
 
-            // Fill tableaus
-            for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
-            {
-                stock.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1);
-            }
-        }
+			// Fill tableaus
+			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			{
+				stock.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1);
+			}
+		}
 
-        /// <summary>
-        /// Gets card string representation of the current state.
-        /// </summary>
-        /// <returns>The current state as card string.</returns>
-        public override string ToString()
-        {
-            string result = "";
+		/// <summary>
+		/// Gets card string representation of the current state.
+		/// </summary>
+		/// <returns>The current state as card string.</returns>
+		public override string ToString()
+		{
+			string result = "";
 
-            // Output stacks
-            result += "Stock: " + stock.ToString() + "\n";
+			// Output stacks
+			result += "Stock: " + stock.ToString() + "\n";
 
-            result += "Waste: " + waste.ToString() + "\n";
+			result += "Waste: " + waste.ToString() + "\n";
 
-            foreach (CardStack foundation in foundations)
-            {
-                result += "Foundation: " + foundation.ToString() + "\n";
-            }
+			foreach (FoundationCardStack foundation in foundations)
+			{
+				result += "Foundation: " + foundation.ToString() + "\n";
+			}
 
-            foreach (CardStack tableau in tableaus)
-            {
-                result += "Tableau: " + tableau.ToString() + "\n";
-            }
+			foreach (TableauCardStack tableau in tableaus)
+			{
+				result += "Tableau: " + tableau.ToString() + "\n";
+			}
 
-            result += "\n";
+			result += "\n";
 
-            return result;
-        }
+			return result;
+		}
 
         const char tableauChar = 'T', foundationChar = 'F', stockChar = 'S';
         /// <summary>
@@ -99,13 +100,13 @@ namespace Klondike_Solitaire_Simulation
         /// </summary>
         public List<State> stateHistory = new List<State>();
 
-        /// <summary>
-        /// Makes a list of every possible future state, paired with its score, from the current state
-        /// </summary>
-        /// <returns>List of KeyValuePairs, where Key=score and Value=State</returns>
-        public List<KeyValuePair<int, State>> GetMoves()
-        {
-            List<KeyValuePair<int, State>> possibleMoves = new List<KeyValuePair<int, State>>();
+		/// <summary>
+		/// Makes a list of every possible future state, paired with its score, from the current state
+		/// </summary>
+		/// <returns>List of KeyValuePairs, where Key=score and Value=State</returns>
+		public List<KeyValuePair<int, State>> GetMoves()
+		{
+			List<KeyValuePair<int, State>> possibleMoves = new List<KeyValuePair<int, State>>();
 
             // Stock
             int cardTurnOverAmount = 3;
@@ -119,103 +120,88 @@ namespace Klondike_Solitaire_Simulation
                 possibleMoves.AddRange(AddMoves(waste.Peek().TopCard(), stockChar, -1));
             }
 
-            // Tablueau
-            for(int tableauIndex = 0; tableauIndex < tableaus.Count(); tableauIndex++)
-            {
-                foreach(Card card in GetTableauCards(tableaus[tableauIndex].Peek()))
-                    possibleMoves.AddRange(AddMoves(card, tableauChar, tableauIndex));
-            }
+			// Tablueau
+			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			{
+				foreach (Card card in GetTableauCards(tableaus[tableauIndex].Peek()))
+				{
+					possibleMoves.AddRange(AddMoves(card, tableauChar, tableauIndex));
+				}
+			}
 
-            // Foundation
-            for(int foundationIndex = 0; foundationIndex < foundations.Count(); foundationIndex++)
-            {
-                possibleMoves.AddRange(AddMoves(foundations[foundationIndex].Peek().TopCard(), foundationChar, foundationIndex));
-            }
+			// Foundation
+			for (int foundationIndex = 0; foundationIndex < foundations.Count; foundationIndex++)
+			{
+				possibleMoves.AddRange(AddMoves(foundations[foundationIndex].Peek().TopCard(), foundationChar, foundationIndex));
+			}
 
-            return possibleMoves;
-        }
+			return possibleMoves;
+		}
 
-        /// <summary>
-        /// Returns a list of every card you can see on top of a tableau
-        /// </summary>
-        /// <param name="topCard"></param>
-        /// <returns></returns>
-        private List<Card> GetTableauCards(Card topCard)
-        {
-            if (topCard.attached == null)
-                return new List<Card> { topCard };
-            else
-            {
-                List<Card> tableauCards = new List<Card>{ topCard };
-                tableauCards.AddRange(GetTableauCards(topCard.attached));
-                return tableauCards;
-            }
-        }
+		/// <summary>
+		/// Returns a list of every card you can see on top of a tableau.
+		/// </summary>
+		/// <param name="topCard"></param>
+		/// <returns></returns>
+		private List<Card> GetTableauCards(Card topCard)
+		{
+			if (topCard.attached == null)
+			{
+				return new List<Card> {
+					topCard
+				};
+			}
+			else
+			{
+				List<Card> tableauCards = new List<Card> {
+					topCard
+				};
+				tableauCards.AddRange(GetTableauCards(topCard.attached));
+				return tableauCards;
+			}
+		}
 
-        /// <summary>
-        /// Makes a list of every possible move you can do with a certain card
-        /// </summary>
-        /// <param name="card">The card you want to move</param>
-        /// <param name="originChar">A character representing the type of CardStack the card came from (Tableau, Foundation or Stock)</param>
-        /// <param name="originIndex">The index of the CardStack the card came from (-1 for the stock)</param>
-        /// <returns></returns>
-        private List<KeyValuePair<int, State>> AddMoves(Card card, char originChar, int originIndex)
-        {
-            List<KeyValuePair<int, State>> result = new List<KeyValuePair<int, State>>();
+		/// <summary>
+		/// Makes a list of every possible move you can do with a certain card.
+		/// </summary>
+		/// <param name="card">The card you want to move</param>
+		/// <param name="originChar">A character representing the type of CardStack the card came from (Tableau, Foundation or Stock)</param>
+		/// <param name="originIndex">The index of the CardStack the card came from (-1 for the stock)</param>
+		/// <returns></returns>
+		private List<KeyValuePair<int, State>> AddMoves(Card card, char originChar, int originIndex)
+		{
+			List<KeyValuePair<int, State>> result = new List<KeyValuePair<int, State>>();
 
-            for(int tableauIndex = 0; tableauIndex < tableaus.Count(); tableauIndex++)
-            {
-                if (IsMovePossible(card, tableaus[tableauIndex], tableauChar))
-                {
-                    KeyValuePair<int, State> move = AddMove(originChar, tableauChar, originIndex, tableauIndex);
-                    if(!stateHistory.Contains(move.Value))
-                        result.Add(move);
-                }
-            }
-            // If the card we want to move is from a foundation already, we don't need to check if we can move it to a(n other) foundation
-            if (!(originChar == foundationChar))
-            {
-                for (int foundationIndex = 0; foundationIndex < foundations.Count(); foundationIndex++)
-                {
-                    if (IsMovePossible(card, foundations[foundationIndex], foundationChar))
-                    {
-                        KeyValuePair<int, State> move = AddMove(originChar, foundationChar, originIndex, foundationIndex);
-                        if(!stateHistory.Contains(move.Value))
-                            result.Add(move);
-                    }
-                }
-            }
-            return result;
-        }
+			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			{
+				if (tableaus[tableauIndex].IsMovePossible(card))
+				{
+					KeyValuePair<int, State> move = AddMove(originChar, tableauChar, originIndex, tableauIndex);
+					if (!stateHistory.Contains(move.Value))
+					{
+						result.Add(move);
+					}
+				}
+			}
 
-        /// <summary>
-        /// Checks if a move is possible, given a card, a CardStack and the type of the CardStack
-        /// </summary>
-        /// <param name="top">The Card you want to move to the CardStack</param>
-        /// <param name="bottom">The CardStack you want to place a card on</param>
-        /// <param name="destination">A character representing the type of CardStack (Tableau or Foundation)</param>
-        /// <returns></returns>
-        private bool IsMovePossible(Card top, CardStack bottom, char destination)
-        {
-            switch (destination)
-            {
-                // Move it on a tableau
-                case tableauChar:
-                    if (bottom.IsEmpty())
-                        return top.rank == King;
-                    Card bottomCard = bottom.Peek().TopCard();
-                    return (top.rank == bottomCard.rank - 1) && 
-                        ((top.suit == Hearts || top.suit == Diamonds) && (bottomCard.suit == Spades || bottomCard.suit == Clubs)) || 
-                        ((top.suit == Spades || top.suit == Clubs)    && (bottomCard.suit == Hearts || bottomCard.suit == Diamonds));
-                // Move it on a foundation
-                case foundationChar:
-                    if (bottom.IsEmpty())
-                        return top.rank == Ace;
-                    return (top.suit == bottom.Peek().TopCard().suit && top.rank == bottom.Peek().TopCard().rank + 1);
+			// If the card we want to move is from a foundation already, we don't need to check if we can move it to a(n other) foundation
+			if (!(originChar == foundationChar))
+			{
+				for (int foundationIndex = 0; foundationIndex < foundations.Count; foundationIndex++)
+				{
+					if (foundations[foundationIndex].IsMovePossible(card))
+					{
+						KeyValuePair<int, State> move = AddMove(originChar, foundationChar, originIndex, foundationIndex);
+						if (!stateHistory.Contains(move.Value))
+						{
+							result.Add(move);
+						}
+					}
+				}
+			}
 
-                default: throw new Exception("Destination incorrect");
-            }
-        }
+			return result;
+		}
 
         /// <summary>
         /// Make a new State (paired with its score,) from a known move, represented as characters and integers
@@ -247,24 +233,31 @@ namespace Klondike_Solitaire_Simulation
                         nextState.stock.Push(nextState.waste.Pop());
                     break;
 
-                default: throw new Exception("Origin incorrect");
-            }
-            switch (destination)
-            {
-                // Tableau
-                case tableauChar:
-                    nextState.tableaus[destinationIndex].Peek().TopCard().attached = card;
-                    break;
-                // Foundation
-                case foundationChar:
-                    nextState.foundations[destinationIndex].Push(card);
-                    break;
+				default:
+					throw new Exception("Origin incorrect");
+			}
 
-                default: throw new Exception("Destination incorrect");
+			switch (destination)
+			{
+				// Tableau
+				case tableauChar:
+					nextState.tableaus[destinationIndex].Peek().TopCard().attached = card;
 
-            }
-            return new KeyValuePair<int, State> ( HeuristicFunction(nextState), nextState );
-        }
+					break;
+
+				// Foundation
+				case foundationChar:
+					nextState.foundations[destinationIndex].Push(card);
+
+					break;
+
+				default:
+					throw new Exception("Destination incorrect");
+
+			}
+
+			return new KeyValuePair<int, State>(HeuristicFunction(nextState), nextState);
+		}
 
         /// <summary>
         /// Function that gives a score to a future state
