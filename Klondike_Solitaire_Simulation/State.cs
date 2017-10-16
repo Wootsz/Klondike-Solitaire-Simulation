@@ -103,7 +103,8 @@ namespace Klondike_Solitaire_Simulation
             // Tablueau
             for(int tableauIndex = 0; tableauIndex < tableaus.Count(); tableauIndex++)
             {
-                possibleMoves.AddRange(AddMoves(tableaus[tableauIndex].Peek().TopCard(), tableauChar, tableauIndex));
+                foreach(Card card in GetTableauCards(tableaus[tableauIndex].Peek()))
+                    possibleMoves.AddRange(AddMoves(card, tableauChar, tableauIndex));
             }
 
             // Foundation
@@ -113,6 +114,23 @@ namespace Klondike_Solitaire_Simulation
             }
 
             return possibleMoves;
+        }
+
+        /// <summary>
+        /// Returns a list of every card you can see on top of a tableau
+        /// </summary>
+        /// <param name="topCard"></param>
+        /// <returns></returns>
+        private List<Card> GetTableauCards(Card topCard)
+        {
+            if (topCard.attached == null)
+                return new List<Card> { topCard };
+            else
+            {
+                List<Card> tableauCards = new List<Card>{ topCard };
+                tableauCards.AddRange(GetTableauCards(topCard.attached));
+                return tableauCards;
+            }
         }
 
         /// <summary>
