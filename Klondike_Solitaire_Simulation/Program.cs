@@ -13,6 +13,7 @@ namespace Klondike_Solitaire_Simulation
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
+            Console.Title = "Klondike Solitaire Simulator";
 
             int iterations = 1;
 
@@ -20,6 +21,7 @@ namespace Klondike_Solitaire_Simulation
             {
                 // Initialize the game state
                 State state = new State();
+                state.GetMoves();
 
                 Console.WriteLine(state.ToString());
             }
