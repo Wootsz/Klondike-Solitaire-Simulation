@@ -177,6 +177,7 @@ namespace Klondike_Solitaire_Simulation
 				if (tableaus[tableauIndex].IsMovePossible(card))
 				{
 					KeyValuePair<int, State> move = AddMove(originChar, tableauChar, originIndex, tableauIndex);
+
 					if (!stateHistory.Contains(move.Value))
 					{
 						result.Add(move);
@@ -192,6 +193,7 @@ namespace Klondike_Solitaire_Simulation
 					if (foundations[foundationIndex].IsMovePossible(card))
 					{
 						KeyValuePair<int, State> move = AddMove(originChar, foundationChar, originIndex, foundationIndex);
+
 						if (!stateHistory.Contains(move.Value))
 						{
 							result.Add(move);
@@ -254,7 +256,6 @@ namespace Klondike_Solitaire_Simulation
 
 				default:
 					throw new Exception("Destination incorrect");
-
 			}
 
 			return new KeyValuePair<int, State>(HeuristicFunction(nextState), nextState);
