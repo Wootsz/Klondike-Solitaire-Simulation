@@ -11,7 +11,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// Creates a new foundation stack.
 		/// </summary>
-		public FoundationCardStack() : base(13)
+		public FoundationCardStack()
 		{
 		}
 
@@ -45,8 +45,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				// Check if the card can be placed
 				bool isSameSuit = card.Suit == PeekAtTopCard().Suit;
 				bool isNextRank = card.Rank == PeekAtTopCard().Rank + 1;
+				bool isSpace = PeekAtTopCard().Rank != Rank.King;
 
-				return isSameSuit && isNextRank;
+				return isSameSuit && isNextRank && isSpace;
 			}
 		}
 	}

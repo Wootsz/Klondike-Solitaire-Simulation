@@ -11,7 +11,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// Creates a new tableau stack.
 		/// </summary>
-		public TableauCardStack() : base(13)
+		public TableauCardStack()
 		{
 		}
 
@@ -45,8 +45,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				// Otherwise, check the rules
 				bool isLowerRank = card.Rank == PeekAtTopCard().Rank - 1;
 				bool isAlternateColor = card.Color != PeekAtTopCard().Color;
+				bool isSpace = PeekAtTopCard().Rank != Rank.Ace;
 
-				return isLowerRank && isAlternateColor;
+				return isLowerRank && isAlternateColor && isSpace;
 			}
 		}
 	}

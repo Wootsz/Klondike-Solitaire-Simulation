@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,10 @@ namespace Klondike_Solitaire_Simulation
 				// Initialize the game state
 				State state = new State();
 
-				Console.WriteLine(state.ToString(true));
+				string stateText = state.ToString(true, 5);
+				Console.WriteLine(stateText);
+				StreamWriter writer = new StreamWriter(@"C:\Users\qub1\Desktop\Output.txt");
+				writer.Write(stateText);
 			}
 
 			Console.ReadLine();

@@ -40,7 +40,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		public WasteCardStack Empty()
 		{
-			MoveCardsFromTop(Stock, cards.Count, true);
+			MoveCardsFromTop(Stock, Cards.Count, true);
 
 			return this;
 		}
