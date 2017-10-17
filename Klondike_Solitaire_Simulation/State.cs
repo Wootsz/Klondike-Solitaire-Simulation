@@ -241,6 +241,7 @@ namespace Klondike_Solitaire_Simulation
 				{
 					foreach (Card movableCard in sourceStack.MovableCards)
 					{
+						// Prevent nearly identical moves
 						bool foundFoundation = false;
 
 						foreach (CardStack targetStack in CardStacks)
@@ -250,6 +251,7 @@ namespace Klondike_Solitaire_Simulation
 
 							if (!isUselessMove && targetStack.CanPlaceCardOnTop(movableCard))
 							{
+								// Prevent nearly identical moves
 								if (targetStack is FoundationCardStack) {
 									if (foundFoundation) {
 										continue;
