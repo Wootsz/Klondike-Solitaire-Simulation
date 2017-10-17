@@ -53,9 +53,59 @@ namespace Klondike_Solitaire_Simulation
 			}
 		}
 
-		public List<int> StateNumber = new List<int>() {
-			1
-		};
+		/// <summary>
+		/// The previous state.
+		/// </summary>
+		public State PreviousState = null;
+
+		/// <summary>
+		/// The total number of this state.
+		/// </summary>
+		public List<int> TotalStateNumber
+		{
+			get
+			{
+				if (PreviousState == null)
+				{
+					return new List<int>() {
+						CurrentStateNumber
+					};
+				}
+				else
+				{
+					List<int> result = PreviousState.TotalStateNumber;
+
+					result.Add(CurrentStateNumber);
+
+					return result;
+				}
+			}
+		}
+
+		/// <summary>
+		/// The current number of this state.
+		/// </summary>
+		public int CurrentStateNumber = 1;
+
+		/// <summary>
+		/// Whether this state is a repeat of a previous state.
+		/// </summary>
+		public bool IsRepeatedState
+		{
+			get
+			{
+				State currentState = this;
+				while ((currentState = currentState.PreviousState) != null)
+				{
+					if (IsSame(currentState))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
 
 		/// <summary>
 		/// The Cards left in the stock.
@@ -104,6 +154,16 @@ namespace Klondike_Solitaire_Simulation
 		}
 
 		/// <summary>
+		/// Whether this state is an end state.
+		/// </summary>
+		public bool IsEndState => GetMoves().Count == 0;
+
+		/// <summary>
+		/// The amount of moves made to get to this state.
+		/// </summary>
+		public int MovesMade => TotalStateNumber.Count - 1;
+
+		/// <summary>
 		/// Creates card new game state.
 		/// </summary>
 		public State()
@@ -150,7 +210,8 @@ namespace Klondike_Solitaire_Simulation
 				Tableaus[tableauIndex] = new TableauCardStack(original.Tableaus[tableauIndex]);
 			}
 
-			StateNumber = new List<int>(original.StateNumber);
+			CurrentStateNumber = original.CurrentStateNumber;
+			//PreviousState = new State(original.PreviousState);
 		}
 
 		/// <summary>
@@ -164,7 +225,11 @@ namespace Klondike_Solitaire_Simulation
 
 		public string ToString(bool printMoves, int recursionCount = 0, string indent = "|")
 		{
-			string result = indent + "- State #" + String.Join(".", StateNumber);
+			string result = indent + "- State #" + String.Join(".", TotalStateNumber);
+
+			result += "\n" + indent + "  Is end state: " + IsEndState;
+
+			result += "\n" + indent + "  Moves before made so far: " + MovesMade;
 
 			// Add score
 			result += "\n" + indent + "  State score: " + Score;
@@ -215,23 +280,32 @@ namespace Klondike_Solitaire_Simulation
 
 			int stateNumber = 1;
 
-			// State where next Cards are moved to the waste
-			State stockToWaste = new State(this);
-			stockToWaste.StateNumber.Add(stateNumber);
-			stockToWaste.Stock.MoveToWaste();
-			result.Add(stockToWaste);
-
-			++stateNumber;
-
-			// State where waste is emptied
-			if (Stock.CardCount == 0)
+			// State where next Cards are moved to and from the waste
+			if (Stock.IsEmpty())
 			{
 				State wasteToStock = new State(this);
-				wasteToStock.StateNumber.Add(stateNumber);
+				wasteToStock.PreviousState = this;
+				wasteToStock.CurrentStateNumber = stateNumber;
 				wasteToStock.Stock.Waste.Empty();
-				result.Add(wasteToStock);
 
-				++stateNumber;
+				if (!wasteToStock.IsRepeatedState)
+				{
+					result.Add(wasteToStock);
+					++stateNumber;
+				}
+			}
+			else
+			{
+				State stockToWaste = new State(this);
+				stockToWaste.PreviousState = this;
+				stockToWaste.CurrentStateNumber = stateNumber;
+				stockToWaste.Stock.MoveToWaste();
+
+				if (!stockToWaste.IsRepeatedState)
+				{
+					result.Add(stockToWaste);
+					++stateNumber;
+				}
 			}
 
 			// All possible card movements
@@ -252,18 +326,23 @@ namespace Klondike_Solitaire_Simulation
 							if (!isUselessMove && targetStack.CanPlaceCardOnTop(movableCard))
 							{
 								// Prevent nearly identical moves
-								if (targetStack is FoundationCardStack) {
-									if (foundFoundation) {
+								if (targetStack is FoundationCardStack)
+								{
+									if (foundFoundation)
+									{
 										continue;
-									} else {
+									}
+									else
+									{
 										foundFoundation = true;
 									}
 								}
 
 								// Clone state
 								State newState = new State(this);
+								newState.PreviousState = this;
 
-								newState.StateNumber.Add(stateNumber);
+								newState.CurrentStateNumber = stateNumber;
 
 								Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
 
@@ -271,9 +350,11 @@ namespace Klondike_Solitaire_Simulation
 								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
 
 								// Add new state
-								result.Add(newState);
-
-								++stateNumber;
+								if (!newState.IsRepeatedState)
+								{
+									result.Add(newState);
+									++stateNumber;
+								}
 							}
 						}
 					}
@@ -281,6 +362,40 @@ namespace Klondike_Solitaire_Simulation
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Checks if the two states are the same.
+		/// </summary>
+		/// <param name="otherState">The state to compare to.</param>
+		/// <returns>Whether the states are the same.</returns>
+		public bool IsSame(State otherState)
+		{
+			if (CardStacks.Count != otherState.CardStacks.Count)
+			{
+				return false;
+			}
+
+			for (int stackIndex = 0; stackIndex < CardStacks.Count; ++stackIndex)
+			{
+				if (CardStacks[stackIndex].CardCount != otherState.CardStacks[stackIndex].CardCount)
+				{
+					return false;
+				}
+
+				for (int cardIndex = 0; cardIndex < CardStacks[stackIndex].CardCount; ++cardIndex)
+				{
+					Card currentCard = CardStacks[stackIndex].Cards[cardIndex];
+					Card otherCard = otherState.CardStacks[stackIndex].Cards[cardIndex];
+					if ((int)currentCard.Rank != (int)otherCard.Rank || (int)currentCard.Suit != (int)otherCard.Suit ||
+						currentCard.Flipped != otherCard.Flipped)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
 		}
 
 		/*
