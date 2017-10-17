@@ -313,12 +313,13 @@ namespace Klondike_Solitaire_Simulation
 			{
 				if (!sourceStack.IsEmpty() && sourceStack.CanRemoveCardFromTop())
 				{
-					foreach (Card movableCard in sourceStack.MovableCards)
-					{
-						// Prevent nearly identical moves
-						bool foundFoundation = false;
+					// Prevent nearly identical moves
+					bool foundFoundation = false;
 
-						foreach (CardStack targetStack in CardStacks)
+					foreach (CardStack targetStack in CardStacks)
+					{
+						// Prevent moving more than one card to or from a foundation
+						foreach (Card movableCard in ((sourceStack is FoundationCardStack || targetStack is FoundationCardStack) ? new List<Card>() {sourceStack.TopCard} : sourceStack.MovableCards))
 						{
 							// Prevent moving cards between empty stacks and itself
 							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty();
