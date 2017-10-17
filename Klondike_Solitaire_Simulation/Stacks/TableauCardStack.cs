@@ -11,7 +11,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// Creates a new tableau stack.
 		/// </summary>
-		public TableauCardStack() : base(13)
+		public TableauCardStack()
 		{
 		}
 
@@ -43,11 +43,22 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			else
 			{
 				// Otherwise, check the rules
-				bool isLowerRank = card.Rank == PeekAtTopCard().Rank - 1;
-				bool isAlternateColor = card.Color != PeekAtTopCard().Color;
+				bool isLowerRank = card.Rank == TopCard.Rank - 1;
+				bool isAlternateColor = card.Color != TopCard.Color;
+				bool isSpace = TopCard.Rank != Rank.Ace;
 
-				return isLowerRank && isAlternateColor;
+				return isLowerRank && isAlternateColor && isSpace;
 			}
+		}
+
+		public override CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true) {
+			CardStack result = base.MoveCardsFromTop(otherStack, amount, flip, reverse);
+
+			if (!IsEmpty() && TopCard.Flipped) {
+				TopCard.Flip();
+			}
+
+			return result;
 		}
 	}
 }
