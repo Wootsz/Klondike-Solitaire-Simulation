@@ -18,27 +18,34 @@ namespace Klondike_Solitaire_Simulation
 			Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
 			Console.Title = "Klondike Solitaire Simulator";
 
-			int iterations = 1;
+			Random r = new Random();
 
-			for (int iteration = 0; iteration < iterations; iteration++)
+			// Initialize the game state
+			State startState = new State();
+
+			Console.WriteLine("Start state:");
+			Console.WriteLine(startState.ToString(false));
+
+			Console.WriteLine("Possible end states:");
+			while (true)
 			{
-				// Initialize the game state
-				State state = new State();
-				
+				State state = startState;
+
 				// Make a few moves
-				Random r = new Random();
-				for (int i = 0; i < 100; ++i) {
-					List<State> moves = state.GetMoves();
+				List<State> moves;
+				while ((moves = state.GetMoves()).Count > 0)
+				{
 					state = moves[r.Next(moves.Count)];
 				}
 
-				string stateText = state.ToString(true, 1);
+				string stateText = state.ToString(true, 10);
 				Console.WriteLine(stateText);
 				StreamWriter writer = new StreamWriter(@"C:\Users\qub1\Desktop\Output.txt");
 				writer.Write(stateText);
-			}
+				writer.Close();
 
-			Console.ReadLine();
+				Console.ReadLine();
+			}
 		}
 	}
 }
