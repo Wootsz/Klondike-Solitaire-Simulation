@@ -27,12 +27,12 @@ namespace Klondike_Solitaire_Simulation
 				
 				// Make a few moves
 				Random r = new Random();
-				for (int i = 0; i < 5; ++i) {
+				for (int i = 0; i < 30; ++i) {
 					List<State> moves = state.GetMoves();
 					state = moves[r.Next(moves.Count)];
 				}
 
-				string stateText = state.ToString(true, 1);
+				string stateText = state.ToString(true, 3);
 				Console.WriteLine(stateText);
 				StreamWriter writer = new StreamWriter(@"C:\Users\qub1\Desktop\Output.txt");
 				writer.Write(stateText);

@@ -36,6 +36,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public StockCardStack(StockCardStack original) : base(original)
 		{
 			Waste = new WasteCardStack(original.Waste);
+			Waste.Stock = this;
 			MoveAmount = original.MoveAmount;
 		}
 
@@ -44,7 +45,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		public StockCardStack MoveToWaste()
 		{
-			MoveCardsFromTop(Waste, MoveAmount, true);
+			MoveCardsFromTop(Waste, MoveAmount <= CardCount ? MoveAmount : CardCount, true);
 
 			return this;
 		}

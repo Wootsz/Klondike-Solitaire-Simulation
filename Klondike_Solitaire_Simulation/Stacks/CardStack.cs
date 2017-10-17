@@ -291,7 +291,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <param name="flip">Whether to flip the Cards as they are moved.</param>
 		/// <param name="flipNext">Whether to flip the next card after all Cards were moved.</param>
 		/// <param name="reverse">Whether to reverse the order of the Cards.</param>
-		public CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool flipNext = false, bool reverse = true)
+		public virtual CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true)
 		{
 			for (int i = 0; i < amount; ++i)
 			{
@@ -314,17 +314,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				otherStack.AddCardToTop(card);
 			}
 
-			if (flipNext && !IsEmpty())
-			{
-				PeekAtTopCard().Flip();
-			}
-
 			return this;
 		}
 
-		public CardStack MoveCardsFromTop(CardStack otherCardStack, Card card, bool flip = false, bool flipNext = false, bool reverse = true)
+		public CardStack MoveCardsFromTop(CardStack otherCardStack, Card card, bool flip = false, bool reverse = true)
 		{
-			return MoveCardsFromTop(otherCardStack, CardCount - Cards.IndexOf(card), flip, flipNext, reverse);
+			return MoveCardsFromTop(otherCardStack, CardCount - Cards.IndexOf(card), flip, reverse);
 		}
 
 		/// <summary>

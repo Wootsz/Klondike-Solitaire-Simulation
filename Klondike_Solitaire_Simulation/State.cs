@@ -223,6 +223,16 @@ namespace Klondike_Solitaire_Simulation
 
 			++stateNumber;
 
+			// State where waste is emptied
+			if (Stock.CardCount == 0) {
+				State wasteToStock = new State(this);
+				wasteToStock.StateNumber.Add(stateNumber);
+				wasteToStock.Stock.Waste.Empty();
+				result.Add(wasteToStock);
+
+				++stateNumber;
+			}
+
 			// All possible single card movements
 			foreach (CardStack sourceStack in CardStacks)
 			{
@@ -238,7 +248,7 @@ namespace Klondike_Solitaire_Simulation
 							newState.StateNumber.Add(stateNumber);
 
 							// Make move in new state
-							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], 1, false, sourceStack is TableauCardStack);
+							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], 1, false);
 
 							// Add new state
 							result.Add(newState);
@@ -269,7 +279,7 @@ namespace Klondike_Solitaire_Simulation
 								Card newStateNormalCard = newState.Tableaus[Tableaus.IndexOf(sourceTableau)].Cards[sourceTableau.Cards.IndexOf(normalCard)];
 
 								// Make move in new state
-								newState.Tableaus[Tableaus.IndexOf(sourceTableau)].MoveCardsFromTop(newState.Tableaus[Tableaus.IndexOf(targetTableau)], newStateNormalCard, false, true, false);
+								newState.Tableaus[Tableaus.IndexOf(sourceTableau)].MoveCardsFromTop(newState.Tableaus[Tableaus.IndexOf(targetTableau)], newStateNormalCard, false, false);
 
 								// Add new state
 								result.Add(newState);
