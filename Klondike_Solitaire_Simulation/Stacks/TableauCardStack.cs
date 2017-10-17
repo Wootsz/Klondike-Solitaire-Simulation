@@ -9,20 +9,45 @@ namespace Klondike_Solitaire_Simulation.Stacks
 	public class TableauCardStack : CardStack
 	{
 		/// <summary>
+		/// Creates a new tableau stack.
+		/// </summary>
+		public TableauCardStack() : base(13)
+		{
+		}
+
+		/// <summary>
+		/// Copies the tableau stack.
+		/// </summary>
+		/// <param name="original">The original tablue stack.</param>
+		public TableauCardStack(TableauCardStack original) : base(original)
+		{
+		}
+
+		/// <summary>
 		/// Checks if a move is possible given a card.
 		/// </summary>
 		/// <param name="card">The Card you want to move to the stack.</param>
 		/// <returns></returns>
-		public bool IsMovePossible(Card card)
+		public override bool CanPlaceCardOnTop(Card card)
 		{
-			if (IsEmpty()) {
-				return card.rank == Rank.King;
+			// First check if the tableau is empty
+			if (IsEmpty())
+			{
+				// If it's empty, the next card needs to be a king
+				return card.Rank == Rank.King;
 			}
+			else if (IsFull())
+			{
+				return false;
+			}
+			else
+			{
+				// Otherwise, check the rules
+				bool isLowerRank = card.Rank == PeekAtTopCard().Rank - 1;
+				bool isAlternateColor = card.Color != PeekAtTopCard().Color;
 
-			Card bottomCard = Peek().TopCard();
-
-			return card.rank == bottomCard.rank - 1 && (card.suit == Suit.Hearts || card.suit == Suit.Diamonds) && (bottomCard.suit == Suit.Spades || bottomCard.suit == Suit.Clubs) ||
-				   (card.suit == Suit.Spades || card.suit == Suit.Clubs) && (bottomCard.suit == Suit.Hearts || bottomCard.suit == Suit.Diamonds);
+				return isLowerRank && isAlternateColor;
+			}
 		}
 	}
 }

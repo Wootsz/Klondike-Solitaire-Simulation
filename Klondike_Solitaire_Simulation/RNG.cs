@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation
 {
-	public class RNG {
+	public class RNG
+	{
 		private const int a = 2416;
 		private const int c = 374441;
 		private const int m = 1771875;

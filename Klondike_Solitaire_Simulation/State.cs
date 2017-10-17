@@ -12,26 +12,57 @@ namespace Klondike_Solitaire_Simulation
 {
 	public class State
 	{
+		// Settings
+		public const int WasteCardAmount = 3;
+
+		/// <summary>
+		/// The heuristics score of the state.
+		/// </summary>
+		public int Score
+		{
+			get
+			{
+				// Heuristic Modifiers
+				const int FoundationModifier = 1;
+				const int TableauModifier = 1;
+				const int WasteModifier = 1;
+				const int StockModifier = 1;
+
+				int totalScore = 0;
+
+				// Stock score
+				totalScore += Stock.CardCount * StockModifier;
+
+				// Waste score
+				totalScore += Stock.Waste.CardCount * WasteModifier;
+
+				// Tableau score
+				foreach (CardStack tableau in Tableaus)
+				{
+					totalScore += tableau.CardCount * TableauModifier;
+				}
+
+				// Foundation score
+				foreach (CardStack foundation in Foundations)
+				{
+					totalScore += foundation.CardCount * FoundationModifier;
+				}
+
+
+				Console.WriteLine(totalScore);
+				return totalScore;
+			}
+		}
+
 		/// <summary>
 		/// The cards left in the stock.
 		/// </summary>
-		public StockStack stock = new StockStack();
-
-		/// <summary>
-		/// The current waste (cards that can be moved to tableaus).
-		/// </summary>
-		public WasteStack waste = new WasteStack();
-
-		// Heuristic Modifiers
-		public int foundationModifier = 1;
-		public int tableauModifier = 1;
-		public int wastModifier = 0;
-		public int stockModifier = 0;
+		public StockCardStack Stock = new StockCardStack(WasteCardAmount);
 
 		/// <summary>
 		/// The foundations where the final piles can be placed.
 		/// </summary>
-		public List<FoundationCardStack> foundations = new List<FoundationCardStack>() {
+		public List<FoundationCardStack> Foundations = new List<FoundationCardStack>() {
 			new FoundationCardStack(),
 			new FoundationCardStack(),
 			new FoundationCardStack(),
@@ -41,7 +72,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The actual game stacks where the cards are moved to and from.
 		/// </summary>
-		public List<TableauCardStack> tableaus = new List<TableauCardStack>() {
+		public List<TableauCardStack> Tableaus = new List<TableauCardStack>() {
 			new TableauCardStack(),
 			new TableauCardStack(),
 			new TableauCardStack(),
@@ -52,30 +83,69 @@ namespace Klondike_Solitaire_Simulation
 		};
 
 		/// <summary>
+		/// All card stacks.
+		/// </summary>
+		public List<CardStack> CardStacks
+		{
+			get
+			{
+				List<CardStack> result = new List<CardStack>() {
+					Stock,
+					Stock.Waste
+				};
+				result.AddRange(Foundations);
+				result.AddRange(Tableaus);
+
+				return result;
+			}
+		}
+
+		/// <summary>
 		/// Creates card new game state.
 		/// </summary>
 		public State()
 		{
 			// Generate default stack and shuffle
 			CardStack deck = CardStack.GenerateStandardDeck();
-			deck.Shuffle();
 
 			// Shuffle the deck
-			deck.Shuffle();
+			deck.ShuffleCards();
 
 			// Fill tableaus
-			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			for (int tableauIndex = 0; tableauIndex < Tableaus.Count; tableauIndex++)
 			{
 				// Add cards from the deck
-				deck.MoveFromTop(tableaus[tableauIndex], tableauIndex + 1, true);
+				deck.MoveCardsFromTop(Tableaus[tableauIndex], tableauIndex + 1, true);
 
 				// Flip the topmost card
-				tableaus[tableauIndex].Peek().Flip();
+				Tableaus[tableauIndex].PeekAtTopCard().Flip();
 			}
 
 			// Move the rest to the stock
-			stock.Push(deck);
-			stock.FlipAll();
+			Stock.AddStackToTop(deck);
+			Stock.FlipAllCards();
+		}
+
+		/// <summary>
+		/// Copies the old state into a new object.
+		/// </summary>
+		/// <param name="original">The state to copy.</param>
+		public State(State original)
+		{
+			// Copy stock
+			Stock = new StockCardStack(original.Stock);
+
+			// Copy foundations
+			for (int foundationIndex = 0; foundationIndex < original.Foundations.Count; ++foundationIndex)
+			{
+				Foundations[foundationIndex] = new FoundationCardStack(original.Foundations[foundationIndex]);
+			}
+
+			// Copy tableaus
+			for (int tableauIndex = 0; tableauIndex < original.Tableaus.Count; ++tableauIndex)
+			{
+				Tableaus[tableauIndex] = new TableauCardStack(original.Tableaus[tableauIndex]);
+			}
 		}
 
 		/// <summary>
@@ -84,67 +154,122 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>The current state as card string.</returns>
 		public override string ToString()
 		{
+			return ToString(false, false);
+		}
+
+		public string ToString(bool printMoves, bool recursive = false)
+		{
 			string result = "";
 
-			// Output stacks
-			result += "Stock: " + stock + "\n";
+			// Output stock and waste
+			result += "Stock: " + Stock;
 
-			result += "Waste: " + waste + "\n";
-
-			foreach (FoundationCardStack foundation in foundations)
+			// Output foundations
+			foreach (FoundationCardStack foundation in Foundations)
 			{
-				result += "Foundation: " + foundation + "\n";
+				result += "\n" + "Foundation: " + foundation;
 			}
 
-			foreach (TableauCardStack tableau in tableaus)
+			// Output tableaus
+			foreach (TableauCardStack tableau in Tableaus)
 			{
-				result += "Tableau: " + tableau + "\n";
+				result += "\n" + "Tableau: " + tableau;
 			}
 
-			result += "\n";
+			if (printMoves)
+			{
+				List<State> moves = GetMoves();
+
+				result += "\n";
+				result += "\nAmount of possible moves: " + moves.Count;
+
+				for (int moveIndex = 0; moveIndex < moves.Count; ++moveIndex)
+				{
+					State currentState = moves[moveIndex];
+
+					result += "\n\n[#" + (moveIndex + 1) + "]";
+
+					result += "\n" + currentState.ToString(recursive, recursive);
+				}
+			}
 
 			return result;
 		}
 
+		/// <summary>
+		/// Makes a list of every possible future state, paired with its score, from the current state
+		/// </summary>
+		/// <returns>List of KeyValuePairs, where Key=score and Value=State</returns>
+		public List<State> GetMoves()
+		{
+			List<State> result = new List<State>();
+
+			// State where next cards are moved to the waste
+			State stockToWaste = new State(this);
+			stockToWaste.Stock.MoveToWaste();
+			result.Add(stockToWaste);
+
+			// All possible card movements
+			foreach (CardStack sourceStack in CardStacks)
+			{
+				if (!sourceStack.IsEmpty() && sourceStack.CanRemoveCardFromTop())
+				{
+					foreach (CardStack targetStack in CardStacks)
+					{
+						if (sourceStack != targetStack && targetStack.CanPlaceCardOnTop(sourceStack.PeekAtTopCard()))
+						{
+							// Clone state
+							State newState = new State(this);
+
+							// Make move in new state
+							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], 1, false, true);
+
+							// Add new state
+							result.Add(newState);
+						}
+					}
+				}
+			}
+
+			return result;
+		}
+
+		/*
 		const char tableauChar = 'T', foundationChar = 'F', stockChar = 'S';
 		/// <summary>
 		/// A list of all the previous state, so we don't end up in an infinite loop
 		/// </summary>
 		public List<State> stateHistory = new List<State>();
 
-		/// <summary>
-		/// Makes a list of every possible future state, paired with its score, from the current state
-		/// </summary>
-		/// <returns>List of KeyValuePairs, where Key=score and Value=State</returns>
 		public List<KeyValuePair<int, State>> GetMoves()
 		{
 			List<KeyValuePair<int, State>> possibleMoves = new List<KeyValuePair<int, State>>();
 
 			// Stock
 			int cardTurnOverAmount = 3;
-			for (int stockIndex = 0; stockIndex < stock.Count(); stockIndex++)
+			for (int stockIndex = 0; stockIndex < Stock.CardCount; stockIndex++)
 			{
 				// Turn over 3 cards at a time (if you're not at the end of the stock)
-				for (int turnOverIndex = 0; turnOverIndex < Math.Min(cardTurnOverAmount, stock.Count()); turnOverIndex++)
+				for (int turnOverIndex = 0; turnOverIndex < Math.Min(cardTurnOverAmount, Stock.CardCount); turnOverIndex++)
 				{
-					waste.Push(stock.Pop());
+					Waste.AddCardToTop(Stock.RemoveTopCard());
 				}
-				possibleMoves.AddRange(AddMoves(waste.Peek().TopCard(), stockChar, -1));
+				possibleMoves.AddRange(AddMoves(Waste.PeekAtTopCard().TopCard(), stockChar, -1));
 			}
 
 			// Tablueau
-			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			for (int tableauIndex = 0; tableauIndex < Tableaus.Count; tableauIndex++)
 			{
-				foreach (Card card in GetTableauCards(tableaus[tableauIndex].Peek()))
+				foreach (Card card in GetTableauCards(Tableaus[tableauIndex].PeekAtTopCard()))
 				{
 					possibleMoves.AddRange(AddMoves(card, tableauChar, tableauIndex));
 				}
 			}
 
 			// Foundation
-			for (int foundationIndex = 0; foundationIndex < foundations.Count; foundationIndex++)
+			for (int foundationIndex = 0; foundationIndex < Foundations.Count; foundationIndex++)
 			{
-				possibleMoves.AddRange(AddMoves(foundations[foundationIndex].Peek().TopCard(), foundationChar, foundationIndex));
+				possibleMoves.AddRange(AddMoves(Foundations[foundationIndex].PeekAtTopCard().TopCard(), foundationChar, foundationIndex));
 			}
 
 			return possibleMoves;
@@ -157,7 +282,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns></returns>
 		private List<Card> GetTableauCards(Card topCard)
 		{
-			if (topCard.attached == null)
+			if (topCard.AttachedCard == null)
 			{
 				return new List<Card> {
 					topCard
@@ -168,7 +293,7 @@ namespace Klondike_Solitaire_Simulation
 				List<Card> tableauCards = new List<Card> {
 					topCard
 				};
-				tableauCards.AddRange(GetTableauCards(topCard.attached));
+				tableauCards.AddRange(GetTableauCards(topCard.AttachedCard));
 				return tableauCards;
 			}
 		}
@@ -184,9 +309,9 @@ namespace Klondike_Solitaire_Simulation
 		{
 			List<KeyValuePair<int, State>> result = new List<KeyValuePair<int, State>>();
 
-			for (int tableauIndex = 0; tableauIndex < tableaus.Count; tableauIndex++)
+			for (int tableauIndex = 0; tableauIndex < Tableaus.Count; tableauIndex++)
 			{
-				if (tableaus[tableauIndex].IsMovePossible(card))
+				if (Tableaus[tableauIndex].IsMovePossible(card))
 				{
 					KeyValuePair<int, State> move = AddMove(originChar, tableauChar, originIndex, tableauIndex);
 
@@ -200,9 +325,9 @@ namespace Klondike_Solitaire_Simulation
 			// If the card we want to move is from a foundation already, we don't need to check if we can move it to a(n other) foundation
 			if (!(originChar == foundationChar))
 			{
-				for (int foundationIndex = 0; foundationIndex < foundations.Count; foundationIndex++)
+				for (int foundationIndex = 0; foundationIndex < Foundations.Count; foundationIndex++)
 				{
-					if (foundations[foundationIndex].IsMovePossible(card))
+					if (Foundations[foundationIndex].IsMovePossible(card))
 					{
 						KeyValuePair<int, State> move = AddMove(originChar, foundationChar, originIndex, foundationIndex);
 
@@ -233,19 +358,19 @@ namespace Klondike_Solitaire_Simulation
 			{
 				// Tableau
 				case tableauChar:
-					card = nextState.tableaus[originIndex].Pop();
+					card = nextState.Tableaus[originIndex].RemoveTopCard();
 					break;
 				// Foundation
 				case foundationChar:
-					card = nextState.foundations[originIndex].Pop();
+					card = nextState.Foundations[originIndex].RemoveTopCard();
 					break;
 				// Stock
 				case stockChar:
-					card = nextState.waste.Pop();
+					card = nextState.Waste.RemoveTopCard();
 					// Move all cards from the waste back to the stock
-					int wasteLength = nextState.waste.Count();
+					int wasteLength = nextState.Waste.CardCount;
 					for (int wasteIndex = 0; wasteIndex < wasteLength; wasteIndex++)
-						nextState.stock.Push(nextState.waste.Pop());
+						nextState.Stock.AddCardToTop(nextState.Waste.RemoveTopCard());
 					break;
 
 				default:
@@ -256,13 +381,13 @@ namespace Klondike_Solitaire_Simulation
 			{
 				// Tableau
 				case tableauChar:
-					nextState.tableaus[destinationIndex].Peek().TopCard().attached = card;
+					nextState.Tableaus[destinationIndex].PeekAtTopCard().TopCard().AttachedCard = card;
 
 					break;
 
 				// Foundation
 				case foundationChar:
-					nextState.foundations[destinationIndex].Push(card);
+					nextState.Foundations[destinationIndex].AddCardToTop(card);
 
 					break;
 
@@ -272,56 +397,6 @@ namespace Klondike_Solitaire_Simulation
 
 			return new KeyValuePair<int, State>(HeuristicFunction(nextState), nextState);
 		}
-
-		/// <summary>
-		/// Function that gives a score to a future state
-		/// </summary>
-		/// <param name="nextState">The future state</param>
-		/// <returns></returns>
-		public int HeuristicFunction(State nextState)
-		{
-			int totalScore = 0;
-
-			//Stock score
-			totalScore += (nextState.stock.Count() * stockModifier);
-
-			//Waste score
-			totalScore += (nextState.waste.Count() * wastModifier);
-
-			//Tableau score
-			foreach (CardStack tableau in nextState.tableaus)
-			{
-				if (tableau.Count() > 0)
-				{
-					Card card = tableau.Peek();
-					int localScore = 1;
-					while (true)
-					{
-						if (card.attached != null)
-						{
-							card = card.attached;
-							localScore++;
-							continue;
-						}
-						break;
-					}
-
-					totalScore += (localScore * foundationModifier);
-
-				}
-
-			}
-
-			//Foundation score
-			foreach (CardStack foundation in nextState.foundations)
-			{
-				totalScore += (foundation.Count() * foundationModifier);
-			}
-
-
-			Console.WriteLine(totalScore);
-			return totalScore;
-		}
-
+		*/
 	}
 }

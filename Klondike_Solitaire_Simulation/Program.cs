@@ -8,25 +8,26 @@ using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
-    public class Program
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
-            Console.Title = "Klondike Solitaire Simulator";
+	public class Program
+	{
+		static void Main(string[] args)
+		{
+			Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            int iterations = 1;
+			Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
+			Console.Title = "Klondike Solitaire Simulator";
 
-            for (int iteration = 0; iteration < iterations; iteration++)
-            {
-                // Initialize the game state
-                State state = new State();
-                //state.GetMoves();
+			int iterations = 1;
 
-                Console.WriteLine(state.ToString());
-            }
+			for (int iteration = 0; iteration < iterations; iteration++)
+			{
+				// Initialize the game state
+				State state = new State();
 
-            Console.ReadLine();
-        }
-    }
+				Console.WriteLine(state.ToString(true));
+			}
+
+			Console.ReadLine();
+		}
+	}
 }

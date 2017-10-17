@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Klondike_Solitaire_Simulation.Stacks;
 using static Klondike_Solitaire_Simulation.Suit;
 using static Klondike_Solitaire_Simulation.Rank;
 
@@ -14,6 +15,12 @@ namespace Klondike_Solitaire_Simulation
 		Hearts,
 		Clubs,
 		Diamonds
+	}
+
+	public enum Color
+	{
+		Black,
+		Red
 	}
 
 	public enum Rank
@@ -35,52 +42,96 @@ namespace Klondike_Solitaire_Simulation
 
 	public class Card
 	{
+		public const bool UseShorthand = true;
+
 		/// <summary>
 		/// The suit of the card.
 		/// </summary>
-		public Suit suit;
+		public Suit Suit;
+
+		/// <summary>
+		/// The color of the current suit.
+		/// </summary>
+		public Color Color => Suit == Spades || Suit == Clubs ? Color.Black : Color.Red;
 
 		/// <summary>
 		/// The rank of the card.
 		/// </summary>
-		public Rank rank;
+		public Rank Rank;
 
 		/// <summary>
 		/// Whether the card is flipped (invisible).
 		/// </summary>
-		public bool flipped = false;
+		public bool Flipped;
 
 		/// <summary>
-		/// The card that's attached.
+		/// Creates a new card.
 		/// </summary>
-		public Card attached;
-
+		/// <param name="suit">The suit.</param>
+		/// <param name="rank">The rank.</param>
 		public Card(Suit suit, Rank rank)
 		{
-			this.suit = suit;
-			this.rank = rank;
+			Suit = suit;
+			Rank = rank;
 		}
 
-		public Card TopCard()
+		/// <summary>
+		/// Copies a card.
+		/// </summary>
+		/// <param name="original">The card to copy.</param>
+		public Card(Card original)
 		{
-			if (attached == null)
-			{
-				return this;
-			}
-			else
-			{
-				return attached.TopCard();
-			}
+			Suit = (Suit)Enum.Parse(typeof(Suit), original.Suit.ToString());
+			Rank = (Rank)Enum.Parse(typeof(Rank), original.Rank.ToString());
+			Flipped = original.Flipped;
 		}
 
 		/// <summary>
 		/// Flips the card.
 		/// </summary>
-		public void Flip()
+		public Card Flip()
 		{
-			flipped = !flipped;
+			Flipped = !Flipped;
+
+			return this;
 		}
 
-		public override string ToString() => rank + " of " + suit + " (" + (flipped ? "flipped" : "normal") + ")";
+		/// <summary>
+		/// Converts the Card to a string representation.
+		/// </summary>
+		/// <returns>A string representation of the card.</returns>
+		public override string ToString()
+		{
+			if (UseShorthand)
+			{
+				int rankNumber = (int)Rank + 1;
+				string rankLetter = Rank.ToString()[0].ToString();
+				string suitLetter = "";
+				switch (Suit)
+				{
+					case Clubs:
+						suitLetter = "♣";
+						break;
+
+					case Diamonds:
+						suitLetter = "♦";
+						break;
+
+					case Hearts:
+						suitLetter = "♥";
+						break;
+
+					case Spades:
+						suitLetter = "♠";
+						break;
+				}
+
+				return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
+			}
+			else
+			{
+				return Rank + " of " + Suit + " (" + (Flipped ? "flipped" : "normal") + ")";
+			}
+		}
 	}
 }
