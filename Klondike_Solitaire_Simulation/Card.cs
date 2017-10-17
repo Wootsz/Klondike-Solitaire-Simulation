@@ -35,8 +35,24 @@ namespace Klondike_Solitaire_Simulation
 
 	public class Card
 	{
+		/// <summary>
+		/// The suit of the card.
+		/// </summary>
 		public Suit suit;
+
+		/// <summary>
+		/// The rank of the card.
+		/// </summary>
 		public Rank rank;
+
+		/// <summary>
+		/// Whether the card is flipped (invisible).
+		/// </summary>
+		public bool flipped = false;
+
+		/// <summary>
+		/// The card that's attached.
+		/// </summary>
 		public Card attached;
 
 		public Card(Suit suit, Rank rank)
@@ -57,6 +73,14 @@ namespace Klondike_Solitaire_Simulation
 			}
 		}
 
-		public override string ToString() => rank.ToString() + " of " + suit.ToString();
+		/// <summary>
+		/// Flips the card.
+		/// </summary>
+		public void Flip()
+		{
+			flipped = !flipped;
+		}
+
+		public override string ToString() => rank + " of " + suit + " (" + (flipped ? "flipped" : "normal") + ")";
 	}
 }

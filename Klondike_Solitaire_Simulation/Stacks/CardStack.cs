@@ -9,7 +9,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class CardStack
 	{
-		private List<Card> cards = new List<Card>();
+		protected List<Card> cards = new List<Card>();
 
 		/// <summary>
 		/// Generates a default deck with all 52 cards.
@@ -35,17 +35,19 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Checks if the stack is empty.
 		/// </summary>
 		/// <returns>Whether the stack is empty.</returns>
-		public bool IsEmpty() {
+		public bool IsEmpty()
+		{
 			return cards.Count == 0;
 		}
 
-        /// <summary>
-        /// Counts the cards in the card stack
-        /// </summary>
-        /// <returns>The amount of cards</returns>
-        public int Count() {
-            return cards.Count;
-        }
+		/// <summary>
+		/// Counts the cards in the card stack
+		/// </summary>
+		/// <returns>The amount of cards</returns>
+		public int Count()
+		{
+			return cards.Count;
+		}
 
 		/// <summary>
 		/// Shuffles the stack.
@@ -69,7 +71,8 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Adds a card to the stack.
 		/// </summary>
 		/// <param name="card">The card to add.</param>
-		public void Push(Card card) {
+		public void Push(Card card)
+		{
 			cards.Add(card);
 		}
 
@@ -77,7 +80,8 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Pops the top card off the stack.
 		/// </summary>
 		/// <returns>The top card.</returns>
-		public Card Pop() {
+		public Card Pop()
+		{
 			Card result = cards.Last();
 
 			cards.Remove(cards.Last());
@@ -86,11 +90,30 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		}
 
 		/// <summary>
+		/// Pushes another stack on top of this one.
+		/// </summary>
+		/// <param name="stack">The stack to add.</param>
+		public void Push(CardStack stack)
+		{
+			cards.AddRange(stack.cards);
+		}
+
+		/// <summary>
 		/// Peeks at the top card.
 		/// </summary>
 		/// <returns>The top card.</returns>
-		public Card Peek() {
+		public Card Peek()
+		{
 			return cards.Last();
+		}
+
+		/// <summary>
+		/// Flips all cards in the stack.
+		/// </summary>
+		public void FlipAll() {
+			foreach (Card card in cards) {
+				card.Flip();
+			}
 		}
 
 		/// <summary>
@@ -98,9 +121,19 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		/// <param name="otherStack">The other stack.</param>
 		/// <param name="amount">The amount of cards to move.</param>
-		public void MoveFromTop(CardStack otherStack, int amount) {
-			for (int i = 0; i < amount; ++i) {
-				otherStack.Push(Pop());
+		/// <param name="flip">Whether to flip the cards as they are moved.</param>
+		public void MoveFromTop(CardStack otherStack, int amount, bool flip)
+		{
+			for (int i = 0; i < amount; ++i)
+			{
+				Card card = Pop();
+
+				if (flip)
+				{
+					card.Flip();
+				}
+
+				otherStack.Push(card);
 			}
 		}
 

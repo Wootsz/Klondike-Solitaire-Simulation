@@ -21,7 +21,7 @@ namespace Klondike_Solitaire_Simulation
             {
                 // Initialize the game state
                 State state = new State();
-                state.GetMoves();
+                //state.GetMoves();
 
                 Console.WriteLine(state.ToString());
             }
