@@ -23,10 +23,10 @@ namespace Klondike_Solitaire_Simulation
 			get
 			{
 				// Heuristic Modifiers
-				const int FoundationModifier = 1;
+				const int FoundationModifier = 2;
 				const int TableauModifier = 1;
-				const int WasteModifier = 1;
-				const int StockModifier = 1;
+				const int WasteModifier = 0;
+				const int StockModifier = 0;
 
 				int totalScore = 0;
 
@@ -271,85 +271,6 @@ namespace Klondike_Solitaire_Simulation
 			}
 
 			return possibleMoves;
-		}
-
-		/// <summary>
-		/// Returns a list of every card you can see on top of a tableau.
-		/// </summary>
-		/// <param name="topCard"></param>
-		/// <returns></returns>
-		private List<Card> GetTableauCards(Card topCard)
-		{
-			if (topCard.AttachedCard == null)
-			{
-				return new List<Card> {
-					topCard
-				};
-			}
-			else
-			{
-				List<Card> tableauCards = new List<Card> {
-					topCard
-				};
-				tableauCards.AddRange(GetTableauCards(topCard.AttachedCard));
-				return tableauCards;
-			}
-		}
-
-		/// <summary>
-		/// Make a new State (paired with its score,) from a known move, represented as characters and integers
-		/// </summary>
-		/// <param name="origin">A character representing the type of the origin CardStack</param>
-		/// <param name="destination">A character representing the type of the destination CardStack</param>
-		/// <param name="originIndex">An integer representing the index of the origin CardStack (-1 for the stock)</param>
-		/// <param name="destinationIndex">An integer representing the index of the destination CardStack</param>
-		/// <returns></returns>
-		private KeyValuePair<int, State> AddMove(char origin, char destination, int originIndex, int destinationIndex)
-		{
-			State nextState = this;
-			Card card;
-			switch (origin)
-			{
-				// Tableau
-				case tableauChar:
-					card = nextState.Tableaus[originIndex].RemoveTopCard();
-					break;
-				// Foundation
-				case foundationChar:
-					card = nextState.Foundations[originIndex].RemoveTopCard();
-					break;
-				// Stock
-				case stockChar:
-					card = nextState.Waste.RemoveTopCard();
-					// Move all cards from the waste back to the stock
-					int wasteLength = nextState.Waste.CardCount;
-					for (int wasteIndex = 0; wasteIndex < wasteLength; wasteIndex++)
-						nextState.Stock.AddCardToTop(nextState.Waste.RemoveTopCard());
-					break;
-
-				default:
-					throw new Exception("Origin incorrect");
-			}
-
-			switch (destination)
-			{
-				// Tableau
-				case tableauChar:
-					nextState.Tableaus[destinationIndex].PeekAtTopCard().TopCard().AttachedCard = card;
-
-					break;
-
-				// Foundation
-				case foundationChar:
-					nextState.Foundations[destinationIndex].AddCardToTop(card);
-
-					break;
-
-				default:
-					throw new Exception("Destination incorrect");
-			}
-
-			return new KeyValuePair<int, State>(HeuristicFunction(nextState), nextState);
 		}
 		*/
 	}

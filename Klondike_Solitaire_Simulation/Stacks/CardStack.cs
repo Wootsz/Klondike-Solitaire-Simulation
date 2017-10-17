@@ -15,6 +15,28 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public int CardCount => cards.Count;
 
 		/// <summary>
+		/// Amount of flipped cards.
+		/// </summary>
+		public int FlippedCardCount {
+			get {
+				int result = 0;
+
+				foreach (Card card in cards) {
+					if (card.Flipped) {
+						++result;
+					}
+				}
+
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Amount of normal cards.
+		/// </summary>
+		public int NormalCardCount => CardCount - FlippedCardCount;
+
+		/// <summary>
 		/// The maximum capacity of this stack.
 		/// </summary>
 		public int Capacity;
