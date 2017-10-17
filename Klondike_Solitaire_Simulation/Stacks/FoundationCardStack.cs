@@ -43,9 +43,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			else
 			{
 				// Check if the card can be placed
-				bool isSameSuit = card.Suit == PeekAtTopCard().Suit;
-				bool isNextRank = card.Rank == PeekAtTopCard().Rank + 1;
-				bool isSpace = PeekAtTopCard().Rank != Rank.King;
+				bool isSameSuit = card.Suit == TopCard.Suit;
+				bool isNextRank = card.Rank == TopCard.Rank + 1;
+				bool isSpace = TopCard.Rank != Rank.King;
 
 				return isSameSuit && isNextRank && isSpace;
 			}

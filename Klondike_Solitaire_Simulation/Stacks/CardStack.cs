@@ -93,6 +93,42 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		}
 
 		/// <summary>
+		/// All cards that can be moved.
+		/// </summary>
+		public virtual List<Card> MovableCards => NormalCards;
+
+		/// <summary>
+		/// The bottom card.
+		/// </summary>
+		public Card BottomCard {
+			get {
+				if (IsEmpty())
+				{
+					throw new Exception("Card stack is empty!");
+				}
+
+				return Cards.First();
+			}
+		}
+
+		/// <summary>
+		/// Peeks at the top card.
+		/// </summary>
+		/// <returns>The top card.</returns>
+		public Card TopCard
+		{
+			get
+			{
+				if (IsEmpty())
+				{
+					throw new Exception("Card stack is empty!");
+				}
+
+				return Cards.Last();
+			}
+		}
+
+		/// <summary>
 		/// Generates a default deck with all 52 Cards.
 		/// </summary>
 		/// <returns>A standard deck.</returns>
@@ -220,20 +256,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			Cards.AddRange(stack.Cards);
 
 			return this;
-		}
-
-		/// <summary>
-		/// Peeks at the top card.
-		/// </summary>
-		/// <returns>The top card.</returns>
-		public Card PeekAtTopCard()
-		{
-			if (IsEmpty())
-			{
-				throw new Exception("Card stack is empty!");
-			}
-
-			return Cards.Last();
 		}
 
 		/// <summary>

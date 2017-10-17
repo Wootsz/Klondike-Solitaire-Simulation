@@ -43,9 +43,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			else
 			{
 				// Otherwise, check the rules
-				bool isLowerRank = card.Rank == PeekAtTopCard().Rank - 1;
-				bool isAlternateColor = card.Color != PeekAtTopCard().Color;
-				bool isSpace = PeekAtTopCard().Rank != Rank.Ace;
+				bool isLowerRank = card.Rank == TopCard.Rank - 1;
+				bool isAlternateColor = card.Color != TopCard.Color;
+				bool isSpace = TopCard.Rank != Rank.Ace;
 
 				return isLowerRank && isAlternateColor && isSpace;
 			}
@@ -54,8 +54,8 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public override CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true) {
 			CardStack result = base.MoveCardsFromTop(otherStack, amount, flip, reverse);
 
-			if (!IsEmpty() && PeekAtTopCard().Flipped) {
-				PeekAtTopCard().Flip();
+			if (!IsEmpty() && TopCard.Flipped) {
+				TopCard.Flip();
 			}
 
 			return result;

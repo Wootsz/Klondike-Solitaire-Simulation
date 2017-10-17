@@ -8,6 +8,10 @@ namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class WasteCardStack : CardStack
 	{
+		public override List<Card> MovableCards => new List<Card>() {
+			TopCard
+		};
+
 		/// <summary>
 		/// The stock stack.
 		/// </summary>

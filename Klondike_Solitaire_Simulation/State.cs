@@ -121,7 +121,7 @@ namespace Klondike_Solitaire_Simulation
 				deck.MoveCardsFromTop(Tableaus[tableauIndex], tableauIndex + 1, true);
 
 				// Flip the topmost card
-				Tableaus[tableauIndex].PeekAtTopCard().Flip();
+				Tableaus[tableauIndex].TopCard.Flip();
 			}
 
 			// Move the rest to the stock
@@ -224,7 +224,8 @@ namespace Klondike_Solitaire_Simulation
 			++stateNumber;
 
 			// State where waste is emptied
-			if (Stock.CardCount == 0) {
+			if (Stock.CardCount == 0)
+			{
 				State wasteToStock = new State(this);
 				wasteToStock.StateNumber.Add(stateNumber);
 				wasteToStock.Stock.Waste.Empty();
@@ -233,53 +234,39 @@ namespace Klondike_Solitaire_Simulation
 				++stateNumber;
 			}
 
-			// All possible single card movements
+			// All possible card movements
 			foreach (CardStack sourceStack in CardStacks)
 			{
 				if (!sourceStack.IsEmpty() && sourceStack.CanRemoveCardFromTop())
 				{
-					foreach (CardStack targetStack in CardStacks)
+					foreach (Card movableCard in sourceStack.MovableCards)
 					{
-						if (sourceStack != targetStack && targetStack.CanPlaceCardOnTop(sourceStack.PeekAtTopCard()))
+						bool foundFoundation = false;
+
+						foreach (CardStack targetStack in CardStacks)
 						{
-							// Clone state
-							State newState = new State(this);
+							// Prevent moving cards between empty stacks and itself
+							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty();
 
-							newState.StateNumber.Add(stateNumber);
-
-							// Make move in new state
-							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], 1, false);
-
-							// Add new state
-							result.Add(newState);
-
-							++stateNumber;
-						}
-					}
-				}
-			}
-
-			// All possible stack card relocations
-			foreach (TableauCardStack sourceTableau in Tableaus)
-			{
-				foreach (Card normalCard in sourceTableau.NormalCards)
-				{
-
-					if (normalCard != null)
-					{
-						foreach (TableauCardStack targetTableau in Tableaus)
-						{
-							if (sourceTableau != targetTableau && targetTableau.CanPlaceCardOnTop(normalCard))
+							if (!isUselessMove && targetStack.CanPlaceCardOnTop(movableCard))
 							{
+								if (targetStack is FoundationCardStack) {
+									if (foundFoundation) {
+										continue;
+									} else {
+										foundFoundation = true;
+									}
+								}
+
 								// Clone state
 								State newState = new State(this);
 
 								newState.StateNumber.Add(stateNumber);
 
-								Card newStateNormalCard = newState.Tableaus[Tableaus.IndexOf(sourceTableau)].Cards[sourceTableau.Cards.IndexOf(normalCard)];
+								Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
 
 								// Make move in new state
-								newState.Tableaus[Tableaus.IndexOf(sourceTableau)].MoveCardsFromTop(newState.Tableaus[Tableaus.IndexOf(targetTableau)], newStateNormalCard, false, false);
+								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
 
 								// Add new state
 								result.Add(newState);
@@ -314,13 +301,13 @@ namespace Klondike_Solitaire_Simulation
 				{
 					Waste.AddCardToTop(Stock.RemoveTopCard());
 				}
-				possibleMoves.AddRange(AddMoves(Waste.PeekAtTopCard().TopCard(), stockChar, -1));
+				possibleMoves.AddRange(AddMoves(Waste.TopCard.TopCard(), stockChar, -1));
 			}
 
 			// Tablueau
 			for (int tableauIndex = 0; tableauIndex < Tableaus.Count; tableauIndex++)
 			{
-				foreach (Card card in GetTableauCards(Tableaus[tableauIndex].PeekAtTopCard()))
+				foreach (Card card in GetTableauCards(Tableaus[tableauIndex].TopCard))
 				{
 					possibleMoves.AddRange(AddMoves(card, tableauChar, tableauIndex));
 				}
@@ -329,7 +316,7 @@ namespace Klondike_Solitaire_Simulation
 			// Foundation
 			for (int foundationIndex = 0; foundationIndex < Foundations.Count; foundationIndex++)
 			{
-				possibleMoves.AddRange(AddMoves(Foundations[foundationIndex].PeekAtTopCard().TopCard(), foundationChar, foundationIndex));
+				possibleMoves.AddRange(AddMoves(Foundations[foundationIndex].TopCard.TopCard(), foundationChar, foundationIndex));
 			}
 
 			return possibleMoves;
