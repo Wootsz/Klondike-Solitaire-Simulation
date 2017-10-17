@@ -10,35 +10,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 	public class CardStack
 	{
 		/// <summary>
-		/// Counts the Cards in the card stack
+		/// Counts the cards in the card stack
 		/// </summary>
-		public int CardCount => Cards.Count;
-
-		/// <summary>
-		/// Amount of flipped Cards.
-		/// </summary>
-		public int FlippedCardCount
-		{
-			get
-			{
-				int result = 0;
-
-				foreach (Card card in Cards)
-				{
-					if (card.Flipped)
-					{
-						++result;
-					}
-				}
-
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// Amount of normal Cards.
-		/// </summary>
-		public int NormalCardCount => CardCount - FlippedCardCount;
+		public int CardCount => cards.Count;
 
 		/// <summary>
 		/// The maximum capacity of this stack.
@@ -46,90 +20,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public int Capacity;
 
 		/// <summary>
-		/// The Cards on the stack.
+		/// The cards on the stack.
 		/// </summary>
-		public List<Card> Cards = new List<Card>();
+		protected List<Card> cards = new List<Card>();
 
 		/// <summary>
-		/// All flipped cards, from lowest to highest.
-		/// </summary>
-		public List<Card> FlippedCards
-		{
-			get
-			{
-				List<Card> result = new List<Card>();
-
-				foreach (Card card in Cards)
-				{
-					if (card.Flipped)
-					{
-						result.Add(card);
-					}
-				}
-
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// All normal cards, from lowest to highest.
-		/// </summary>
-		public List<Card> NormalCards
-		{
-			get
-			{
-				List<Card> result = new List<Card>();
-
-				foreach (Card card in Cards)
-				{
-					if (!card.Flipped)
-					{
-						result.Add(card);
-					}
-				}
-
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// All cards that can be moved.
-		/// </summary>
-		public virtual List<Card> MovableCards => NormalCards;
-
-		/// <summary>
-		/// The bottom card.
-		/// </summary>
-		public Card BottomCard {
-			get {
-				if (IsEmpty())
-				{
-					throw new Exception("Card stack is empty!");
-				}
-
-				return Cards.First();
-			}
-		}
-
-		/// <summary>
-		/// Peeks at the top card.
-		/// </summary>
-		/// <returns>The top card.</returns>
-		public Card TopCard
-		{
-			get
-			{
-				if (IsEmpty())
-				{
-					throw new Exception("Card stack is empty!");
-				}
-
-				return Cards.Last();
-			}
-		}
-
-		/// <summary>
-		/// Generates a default deck with all 52 Cards.
+		/// Generates a default deck with all 52 cards.
 		/// </summary>
 		/// <returns>A standard deck.</returns>
 		public static CardStack GenerateStandardDeck()
@@ -165,7 +61,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 			for (int cardIndex = 0; cardIndex < original.CardCount; ++cardIndex)
 			{
-				Cards.Add(new Card(original.Cards[cardIndex]));
+				cards.Add(new Card(original.cards[cardIndex]));
 			}
 			Capacity = original.Capacity;
 		}
@@ -176,7 +72,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <returns>Whether the stack is empty.</returns>
 		public bool IsEmpty()
 		{
-			return Cards.Count == 0;
+			return cards.Count == 0;
 		}
 
 		/// <summary>
@@ -195,15 +91,15 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 			List<Card> newCards = new List<Card>();
 
-			while (Cards.Count > 0)
+			while (cards.Count > 0)
 			{
-				int randomCard = Utility.random.Next(0, Cards.Count);
+				int randomCard = Utility.random.Next(0, cards.Count);
 
-				newCards.Add(Cards[randomCard]);
-				Cards.RemoveAt(randomCard);
+				newCards.Add(cards[randomCard]);
+				cards.RemoveAt(randomCard);
 			}
 
-			Cards = newCards;
+			cards = newCards;
 
 			return this;
 		}
@@ -219,7 +115,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				throw new Exception("Card stack is full!");
 			}
 
-			Cards.Add(card);
+			cards.Add(card);
 
 			return this;
 		}
@@ -235,9 +131,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				throw new Exception("Card stack is empty!");
 			}
 
-			Card result = Cards.Last();
+			Card result = cards.Last();
 
-			Cards.Remove(Cards.Last());
+			cards.Remove(cards.Last());
 
 			return result;
 		}
@@ -253,17 +149,31 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				throw new Exception("Card stack is full!");
 			}
 
-			Cards.AddRange(stack.Cards);
+			cards.AddRange(stack.cards);
 
 			return this;
 		}
 
 		/// <summary>
-		/// Flips all Cards in the stack.
+		/// Peeks at the top card.
+		/// </summary>
+		/// <returns>The top card.</returns>
+		public Card PeekAtTopCard()
+		{
+			if (IsEmpty())
+			{
+				throw new Exception("Card stack is empty!");
+			}
+
+			return cards.Last();
+		}
+
+		/// <summary>
+		/// Flips all cards in the stack.
 		/// </summary>
 		public CardStack FlipAllCards()
 		{
-			foreach (Card card in Cards)
+			foreach (Card card in cards)
 			{
 				card.Flip();
 			}
@@ -272,61 +182,17 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		}
 
 		/// <summary>
-		/// Gets the topmost flipped card.
-		/// </summary>
-		/// <returns>The topmost flipped card.</returns>
-		public Card GetTopmostFlippedCard()
-		{
-			for (int i = CardCount - 1; i >= 0; --i)
-			{
-				if (Cards[i].Flipped)
-				{
-					return Cards[i];
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Gets the lowest normal card.
-		/// </summary>
-		/// <returns>the lowest normal card.</returns>
-		public Card GetLowestNormalCard()
-		{
-			for (int i = 0; i < CardCount; ++i)
-			{
-				if (!Cards[i].Flipped)
-				{
-					return Cards[i];
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Moves a specified amount of Cards from the top of this stack to the other stack.
+		/// Moves a specified amount of cards from the top of this stack to the other stack.
 		/// </summary>
 		/// <param name="otherStack">The other stack.</param>
-		/// <param name="amount">The amount of Cards to move.</param>
-		/// <param name="flip">Whether to flip the Cards as they are moved.</param>
-		/// <param name="flipNext">Whether to flip the next card after all Cards were moved.</param>
-		/// <param name="reverse">Whether to reverse the order of the Cards.</param>
-		public virtual CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true)
+		/// <param name="amount">The amount of cards to move.</param>
+		/// <param name="flip">Whether to flip the cards as they are moved.</param>
+		/// <param name="flipNext">Whether to flip the next card after all cards were moved.</param>
+		public CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool flipNext = false)
 		{
 			for (int i = 0; i < amount; ++i)
 			{
-				Card card = null;
-				if (reverse)
-				{
-					card = RemoveTopCard();
-				}
-				else
-				{
-					card = Cards[Cards.Count - amount + i];
-					Cards.Remove(card);
-				}
+				Card card = RemoveTopCard();
 
 				if (flip)
 				{
@@ -336,12 +202,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 				otherStack.AddCardToTop(card);
 			}
 
-			return this;
-		}
+			if (flipNext && !IsEmpty())
+			{
+				PeekAtTopCard().Flip();
+			}
 
-		public CardStack MoveCardsFromTop(CardStack otherCardStack, Card card, bool flip = false, bool reverse = true)
-		{
-			return MoveCardsFromTop(otherCardStack, CardCount - Cards.IndexOf(card), flip, reverse);
+			return this;
 		}
 
 		/// <summary>
@@ -367,6 +233,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Gets the card stack as a string.
 		/// </summary>
 		/// <returns>The card stack as a string.</returns>
-		public override string ToString() => String.Join(", ", Cards);
+		public override string ToString() => String.Join(", ", cards);
 	}
 }

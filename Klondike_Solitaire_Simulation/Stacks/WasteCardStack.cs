@@ -8,10 +8,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class WasteCardStack : CardStack
 	{
-		public override List<Card> MovableCards => new List<Card>() {
-			TopCard
-		};
-
 		/// <summary>
 		/// The stock stack.
 		/// </summary>
@@ -44,7 +40,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		public WasteCardStack Empty()
 		{
-			MoveCardsFromTop(Stock, Cards.Count, true);
+			MoveCardsFromTop(Stock, cards.Count, true);
 
 			return this;
 		}
