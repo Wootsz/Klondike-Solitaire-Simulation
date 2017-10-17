@@ -48,8 +48,6 @@ namespace Klondike_Solitaire_Simulation
 					totalScore += foundation.CardCount * FoundationModifier;
 				}
 
-
-				Console.WriteLine(totalScore);
 				return totalScore;
 			}
 		}
@@ -159,10 +157,10 @@ namespace Klondike_Solitaire_Simulation
 
 		public string ToString(bool printMoves, bool recursive = false)
 		{
-			string result = "";
+			string result = "State score: " + Score;
 
 			// Output stock and waste
-			result += "Stock: " + Stock;
+			result += "\nStock: " + Stock;
 
 			// Output foundations
 			foreach (FoundationCardStack foundation in Foundations)
@@ -296,50 +294,6 @@ namespace Klondike_Solitaire_Simulation
 				tableauCards.AddRange(GetTableauCards(topCard.AttachedCard));
 				return tableauCards;
 			}
-		}
-
-		/// <summary>
-		/// Makes a list of every possible move you can do with a certain card.
-		/// </summary>
-		/// <param name="card">The card you want to move</param>
-		/// <param name="originChar">A character representing the type of CardStack the card came from (Tableau, Foundation or Stock)</param>
-		/// <param name="originIndex">The index of the CardStack the card came from (-1 for the stock)</param>
-		/// <returns></returns>
-		private List<KeyValuePair<int, State>> AddMoves(Card card, char originChar, int originIndex)
-		{
-			List<KeyValuePair<int, State>> result = new List<KeyValuePair<int, State>>();
-
-			for (int tableauIndex = 0; tableauIndex < Tableaus.Count; tableauIndex++)
-			{
-				if (Tableaus[tableauIndex].IsMovePossible(card))
-				{
-					KeyValuePair<int, State> move = AddMove(originChar, tableauChar, originIndex, tableauIndex);
-
-					if (!stateHistory.Contains(move.Value))
-					{
-						result.Add(move);
-					}
-				}
-			}
-
-			// If the card we want to move is from a foundation already, we don't need to check if we can move it to a(n other) foundation
-			if (!(originChar == foundationChar))
-			{
-				for (int foundationIndex = 0; foundationIndex < Foundations.Count; foundationIndex++)
-				{
-					if (Foundations[foundationIndex].IsMovePossible(card))
-					{
-						KeyValuePair<int, State> move = AddMove(originChar, foundationChar, originIndex, foundationIndex);
-
-						if (!stateHistory.Contains(move.Value))
-						{
-							result.Add(move);
-						}
-					}
-				}
-			}
-
-			return result;
 		}
 
 		/// <summary>
