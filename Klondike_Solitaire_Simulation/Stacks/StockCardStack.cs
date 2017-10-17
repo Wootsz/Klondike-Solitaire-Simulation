@@ -15,14 +15,14 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public WasteCardStack Waste;
 
 		/// <summary>
-		/// The amount of cards to move to the waste each time.
+		/// The amount of Cards to move to the waste each time.
 		/// </summary>
 		public int MoveAmount;
 
 		/// <summary>
 		/// Creates a new stock stack.
 		/// </summary>
-		/// <param name="moveAmount">The amount of cards to move to the waste each time.</param>
+		/// <param name="moveAmount">The amount of Cards to move to the waste each time.</param>
 		public StockCardStack(int moveAmount)
 		{
 			Waste = new WasteCardStack(this);
@@ -36,15 +36,16 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public StockCardStack(StockCardStack original) : base(original)
 		{
 			Waste = new WasteCardStack(original.Waste);
+			Waste.Stock = this;
 			MoveAmount = original.MoveAmount;
 		}
 
 		/// <summary>
-		/// Moves the next cards to the waste.
+		/// Moves the next Cards to the waste.
 		/// </summary>
 		public StockCardStack MoveToWaste()
 		{
-			MoveCardsFromTop(Waste, MoveAmount, true);
+			MoveCardsFromTop(Waste, MoveAmount <= CardCount ? MoveAmount : CardCount, true);
 
 			return this;
 		}
@@ -57,15 +58,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public override bool CanRemoveCardFromTop()
 		{
 			return false;
-		}
-
-		/// <summary>
-		/// Gets a string representation of the stock.
-		/// </summary>
-		/// <returns>A string representation.</returns>
-		public override string ToString()
-		{
-			return base.ToString() + "\n" + "Waste: " + Waste;
 		}
 	}
 }
