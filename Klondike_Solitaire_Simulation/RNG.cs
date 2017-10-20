@@ -23,7 +23,7 @@ namespace Klondike_Solitaire_Simulation
 			if (seed < 0)
 			{
 				TimeSpan span = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0));
-				_currentSeed = (long)span.TotalMilliseconds;
+				_currentSeed = (long) span.TotalMilliseconds;
 			}
 			else
 			{

@@ -26,8 +26,8 @@ namespace Klondike_Solitaire_Simulation
 			//Console.WriteLine("Possible end states:");
 
 			WindowsHeuristic H1 = new WindowsHeuristic();
-            int H1Wincounter = 0;
-            int iterations = 100;
+			int h1Wincounter = 0;
+			int iterations = 100;
 
 			Parallel.For(0, iterations, index =>
 			{
@@ -42,13 +42,12 @@ namespace Klondike_Solitaire_Simulation
 						state = H1.GetMove(state, moves);
 					else if (state.IsWinState)
 					{
-						H1Wincounter++;
+						h1Wincounter++;
 						Console.WriteLine("Win");
 						break;
 					}
 
 					//state = moves[r.Next(moves.Count)];
-
 				}
 				/*
 				string stateText = state.ToString(true, 10);
@@ -59,8 +58,8 @@ namespace Klondike_Solitaire_Simulation
                 */
 			});
 
-            Console.WriteLine((float)H1Wincounter/iterations * 100.0f + "%");
-            Console.ReadLine();
-        }
+			Console.WriteLine((float) h1Wincounter / iterations * 100.0f + "%");
+			Console.ReadLine();
+		}
 	}
 }

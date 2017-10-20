@@ -11,6 +11,11 @@ namespace Klondike_Solitaire_Simulation
 		public const int WasteCardAmount = 3;
 
 		/// <summary>
+		/// All card stacks.
+		/// </summary>
+		public List<CardStack> CardStacks;
+
+		/// <summary>
 		/// The current number of this state.
 		/// </summary>
 		public int CurrentStateNumber = 1;
@@ -160,11 +165,6 @@ namespace Klondike_Solitaire_Simulation
 		}
 
 		/// <summary>
-		/// All card stacks.
-		/// </summary>
-		public List<CardStack> CardStacks;
-
-		/// <summary>
 		/// Whether this state is an end state.
 		/// </summary>
 		public bool IsEndState => GetMoves().Count == 0;
@@ -276,7 +276,7 @@ namespace Klondike_Solitaire_Simulation
 					foreach (CardStack targetStack in CardStacks)
 					{
 						// Prevent moving more than one card to or from a foundation
-						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> { sourceStack.TopCard } : sourceStack.MovableCards)
+						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> {sourceStack.TopCard} : sourceStack.MovableCards)
 						{
 							// Prevent moving cards between empty stacks and itself
 							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty;
@@ -341,7 +341,8 @@ namespace Klondike_Solitaire_Simulation
 				{
 					Card currentCard = CardStacks[stackIndex].Cards[cardIndex];
 					Card otherCard = otherState.CardStacks[stackIndex].Cards[cardIndex];
-					if ((int)currentCard.Rank != (int)otherCard.Rank || (int)currentCard.Suit != (int)otherCard.Suit || currentCard.Flipped != otherCard.Flipped)
+
+					if ((int) currentCard.Rank != (int) otherCard.Rank || (int) currentCard.Suit != (int) otherCard.Suit || currentCard.Flipped != otherCard.Flipped)
 					{
 						return false;
 					}
