@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Klondike_Solitaire_Simulation.Stacks;
+
 using static Klondike_Solitaire_Simulation.Suit;
-using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
@@ -81,8 +76,8 @@ namespace Klondike_Solitaire_Simulation
 		/// <param name="original">The card to copy.</param>
 		public Card(Card original)
 		{
-			Suit = (Suit)Enum.Parse(typeof(Suit), original.Suit.ToString());
-			Rank = (Rank)Enum.Parse(typeof(Rank), original.Rank.ToString());
+			Suit = (Suit) Enum.Parse(typeof(Suit), original.Suit.ToString());
+			Rank = (Rank) Enum.Parse(typeof(Rank), original.Rank.ToString());
 			Flipped = original.Flipped;
 		}
 
@@ -104,7 +99,7 @@ namespace Klondike_Solitaire_Simulation
 		{
 			if (UseShorthand)
 			{
-				int rankNumber = (int)Rank + 1;
+				int rankNumber = (int) Rank + 1;
 				string rankLetter = Rank.ToString()[0].ToString();
 				string suitLetter = "";
 				switch (Suit)

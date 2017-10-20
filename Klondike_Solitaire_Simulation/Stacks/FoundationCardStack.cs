@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Klondike_Solitaire_Simulation.Stacks
+﻿namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class FoundationCardStack : CardStack
 	{
 		/// <summary>
 		/// Creates a new foundation stack.
 		/// </summary>
-		public FoundationCardStack()
-		{
-		}
+		public FoundationCardStack() { }
 
 		/// <summary>
 		/// Copies the foundation stack.
 		/// </summary>
 		/// <param name="original">The original foundation stack.</param>
-		public FoundationCardStack(FoundationCardStack original) : base(original)
-		{
-		}
+		public FoundationCardStack(FoundationCardStack original) : base(original) { }
 
 		/// <summary>
 		/// Checks if a move is possible given a card.

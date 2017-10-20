@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation
 {
@@ -27,7 +23,7 @@ namespace Klondike_Solitaire_Simulation
 			if (seed < 0)
 			{
 				TimeSpan span = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0));
-				current_seed = (int)span.TotalSeconds;
+				current_seed = (int) span.TotalSeconds;
 			}
 			else
 			{

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class WasteCardStack : CardStack
 	{
-		public override List<Card> MovableCards => new List<Card>() {
+		public override List<Card> MovableCards => new List<Card>()
+		{
 			TopCard
 		};
 
@@ -30,9 +27,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Copies the waste stack.
 		/// </summary>
 		/// <param name="original">The original waste stack.</param>
-		public WasteCardStack(WasteCardStack original) : base(original)
-		{
-		}
+		public WasteCardStack(WasteCardStack original) : base(original) { }
 
 		public override bool CanPlaceCardOnTop(Card card)
 		{
