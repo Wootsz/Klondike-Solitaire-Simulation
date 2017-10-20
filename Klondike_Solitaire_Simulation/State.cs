@@ -120,6 +120,11 @@ namespace Klondike_Solitaire_Simulation
 		public bool IsEndState => GetMoves().Count == 0;
 
 		/// <summary>
+		/// Whether this state is a win state.
+		/// </summary>
+		public bool IsWinState => Foundations.All(foundation => foundation.CardCount == 13);
+
+		/// <summary>
 		/// The amount of moves made to get to this state.
 		/// </summary>
 		public int MovesMade => TotalStateNumber.Count - 1;
