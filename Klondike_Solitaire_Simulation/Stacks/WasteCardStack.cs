@@ -25,7 +25,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 		}
 
-		public override List<Card> MovableCards => new List<Card>()
+		public override List<Card> MovableCards => new List<Card>
 		{
 			TopCard
 		};

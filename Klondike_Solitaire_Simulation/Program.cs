@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Klondike_Solitaire_Simulation.Heuristics;
 
 namespace Klondike_Solitaire_Simulation
@@ -26,38 +27,42 @@ namespace Klondike_Solitaire_Simulation
 
 			WindowsHeuristic H1 = new WindowsHeuristic();
             int H1Wincounter = 0;
-            int iterations = 10;
+            int iterations = 100;
 
-			for(int i = 0; i < iterations; i++)
+			Parallel.For(0, iterations, index =>
 			{
 				State state = new State(); //startState;
-                Console.WriteLine(i);
+				Console.Write(index + " - ");
 
 				// Make moves until you've reached an end state
 				List<State> moves;
 				while ((moves = state.GetMoves()).Count > 0)
 				{
-                    if(!state.IsWinState)
-                        state = H1.GetMove(state, moves);
-                    else if (state.IsWinState)
-                    {
-                        H1Wincounter++;
-                        Console.WriteLine("Win");
-                    }
+					if (!state.IsWinState)
+					{
+						state = H1.GetMove(state, moves);
+						Console.WriteLine("Loss");
+					}
+					else if (state.IsWinState)
+					{
+						H1Wincounter++;
+						Console.WriteLine("Win");
+						break;
+					}
 
-                    //state = moves[r.Next(moves.Count)];
+					//state = moves[r.Next(moves.Count)];
 
-                }
-                /*
+				}
+				/*
 				string stateText = state.ToString(true, 10);
 				Console.WriteLine(stateText);
 				StreamWriter writer = new StreamWriter(@"C:\Users\qub1\Desktop\Output.txt");
 				writer.Write(stateText);
 				writer.Close();
                 */
-			}
+			});
 
-            Console.WriteLine(H1Wincounter/iterations * 100);
+            Console.WriteLine((float)H1Wincounter/iterations * 100.0f + "%");
             Console.ReadLine();
         }
 	}

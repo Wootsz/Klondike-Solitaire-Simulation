@@ -46,7 +46,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 
 				if (score > highScore)
 				{
-					bestStates = new List<State>() {move};
+					bestStates = new List<State> {move};
 				}
 				else if (score == highScore)
 				{

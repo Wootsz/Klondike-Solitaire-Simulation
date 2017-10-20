@@ -18,7 +18,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The foundations where the final piles can be placed.
 		/// </summary>
-		public List<FoundationCardStack> Foundations = new List<FoundationCardStack>()
+		public List<FoundationCardStack> Foundations = new List<FoundationCardStack>
 		{
 			new FoundationCardStack(),
 			new FoundationCardStack(),
@@ -39,7 +39,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// The actual game stacks where the Cards are moved to and from.
 		/// </summary>
-		public List<TableauCardStack> Tableaus = new List<TableauCardStack>()
+		public List<TableauCardStack> Tableaus = new List<TableauCardStack>
 		{
 			new TableauCardStack(),
 			new TableauCardStack(),
@@ -74,6 +74,13 @@ namespace Klondike_Solitaire_Simulation
 			// Move the rest to the stock
 			Stock.AddStackToTop(deck);
 			Stock.FlipAllCards();
+
+			// Set up card stacks
+			CardStacks = new List<CardStack>
+			{
+				Stock,
+				Stock.Waste
+			}.Concat(Foundations).Concat(Tableaus).ToList();
 		}
 
 		/// <summary>
@@ -98,7 +105,13 @@ namespace Klondike_Solitaire_Simulation
 			}
 
 			CurrentStateNumber = original.CurrentStateNumber;
-			//PreviousState = new State(original.PreviousState);
+
+			// Set up card stacks
+			CardStacks = new List<CardStack>
+			{
+				Stock,
+				Stock.Waste
+			}.Concat(Foundations).Concat(Tableaus).ToList();
 		}
 
 		/// <summary>
@@ -110,7 +123,7 @@ namespace Klondike_Solitaire_Simulation
 			{
 				if (PreviousState == null)
 				{
-					return new List<int>()
+					return new List<int>
 					{
 						CurrentStateNumber
 					};
@@ -149,22 +162,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <summary>
 		/// All card stacks.
 		/// </summary>
-		public List<CardStack> CardStacks
-		{
-			get
-			{
-				List<CardStack> result = new List<CardStack>()
-				{
-					Stock,
-					Stock.Waste
-				};
-
-				result.AddRange(Foundations);
-				result.AddRange(Tableaus);
-
-				return result;
-			}
-		}
+		public List<CardStack> CardStacks;
 
 		/// <summary>
 		/// Whether this state is an end state.
@@ -245,11 +243,11 @@ namespace Klondike_Solitaire_Simulation
 				};
 				wasteToStock.Stock.Waste.Empty();
 
-				//if (!wasteToStock.IsRepeatedState)
-				//{
+				if (!wasteToStock.IsRepeatedState)
+				{
 					result.Add(wasteToStock);
 					++stateNumber;
-				//}
+				}
 			}
 			else
 			{
@@ -260,11 +258,11 @@ namespace Klondike_Solitaire_Simulation
 				};
 				stockToWaste.Stock.MoveToWaste();
 
-				//if (!stockToWaste.IsRepeatedState)
-				//{
+				if (!stockToWaste.IsRepeatedState)
+				{
 					result.Add(stockToWaste);
 					++stateNumber;
-				//}
+				}
 			}
 
 			// All possible card movements
@@ -278,7 +276,7 @@ namespace Klondike_Solitaire_Simulation
 					foreach (CardStack targetStack in CardStacks)
 					{
 						// Prevent moving more than one card to or from a foundation
-						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card>() {sourceStack.TopCard} : sourceStack.MovableCards)
+						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> { sourceStack.TopCard } : sourceStack.MovableCards)
 						{
 							// Prevent moving cards between empty stacks and itself
 							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty;
@@ -311,11 +309,11 @@ namespace Klondike_Solitaire_Simulation
 								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
 
 								// Add new state
-								//if (!newState.IsRepeatedState)
-								//{
+								if (!newState.IsRepeatedState)
+								{
 									result.Add(newState);
 									++stateNumber;
-								//}
+								}
 							}
 						}
 					}
@@ -332,11 +330,6 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>Whether the states are the same.</returns>
 		public bool IsSame(State otherState)
 		{
-			if (CardStacks.Count != otherState.CardStacks.Count)
-			{
-				return false;
-			}
-
 			for (int stackIndex = 0; stackIndex < CardStacks.Count; ++stackIndex)
 			{
 				if (CardStacks[stackIndex].CardCount != otherState.CardStacks[stackIndex].CardCount)
@@ -348,7 +341,7 @@ namespace Klondike_Solitaire_Simulation
 				{
 					Card currentCard = CardStacks[stackIndex].Cards[cardIndex];
 					Card otherCard = otherState.CardStacks[stackIndex].Cards[cardIndex];
-					if ((int) currentCard.Rank != (int) otherCard.Rank || (int) currentCard.Suit != (int) otherCard.Suit || currentCard.Flipped != otherCard.Flipped)
+					if ((int)currentCard.Rank != (int)otherCard.Rank || (int)currentCard.Suit != (int)otherCard.Suit || currentCard.Flipped != otherCard.Flipped)
 					{
 						return false;
 					}
