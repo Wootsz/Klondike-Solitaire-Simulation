@@ -3,14 +3,14 @@
 	public class StockCardStack : CardStack
 	{
 		/// <summary>
-		/// The waste stack.
-		/// </summary>
-		public WasteCardStack Waste;
-
-		/// <summary>
 		/// The amount of Cards to move to the waste each time.
 		/// </summary>
 		public int MoveAmount;
+
+		/// <summary>
+		/// The waste stack.
+		/// </summary>
+		public WasteCardStack Waste;
 
 		/// <inheritdoc />
 		/// <summary>

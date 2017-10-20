@@ -28,12 +28,12 @@
 		public override bool CanPlaceCardOnTop(Card card)
 		{
 			// First check if the tableau is empty
-			if (IsEmpty())
+			if (IsEmpty)
 			{
 				// If it's empty, the next card needs to be a king
 				return card.Rank == Rank.King;
 			}
-			else if (IsFull())
+			else if (IsFull)
 			{
 				return false;
 			}
@@ -52,7 +52,7 @@
 		{
 			CardStack result = base.MoveCardsFromTop(otherStack, amount, flip, reverse);
 
-			if (!IsEmpty() && TopCard.Flipped)
+			if (!IsEmpty && TopCard.Flipped)
 			{
 				TopCard.Flip();
 			}

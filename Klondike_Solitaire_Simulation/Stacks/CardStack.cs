@@ -7,6 +7,36 @@ namespace Klondike_Solitaire_Simulation.Stacks
 	public class CardStack
 	{
 		/// <summary>
+		/// The maximum capacity of this stack.
+		/// </summary>
+		public int Capacity;
+
+		/// <summary>
+		/// The Cards on the stack.
+		/// </summary>
+		public List<Card> Cards = new List<Card>();
+
+		/// <summary>
+		/// Creates a new empty card stack.
+		/// </summary>
+		/// <param name="capacity">The maximum capacity of this stack.</param>
+		public CardStack(int capacity = -1) => Capacity = capacity;
+
+		/// <summary>
+		/// Copies the card stack.
+		/// </summary>
+		/// <param name="original">The stack to copy.</param>
+		public CardStack(CardStack original)
+		{
+			for (int cardIndex = 0; cardIndex < original.CardCount; ++cardIndex)
+			{
+				Cards.Add(new Card(original.Cards[cardIndex]));
+			}
+
+			Capacity = original.Capacity;
+		}
+
+		/// <summary>
 		/// Counts the Cards in the card stack
 		/// </summary>
 		public int CardCount => Cards.Count;
@@ -20,16 +50,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Amount of normal Cards.
 		/// </summary>
 		public int NormalCardCount => CardCount - FlippedCardCount;
-
-		/// <summary>
-		/// The maximum capacity of this stack.
-		/// </summary>
-		public int Capacity;
-
-		/// <summary>
-		/// The Cards on the stack.
-		/// </summary>
-		public List<Card> Cards = new List<Card>();
 
 		/// <summary>
 		/// All flipped cards, from lowest to highest.
@@ -58,6 +78,18 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public Card TopCard => Cards.Last();
 
 		/// <summary>
+		/// Checks if the stack is empty.
+		/// </summary>
+		/// <returns>Whether the stack is empty.</returns>
+		public bool IsEmpty => Cards.Count == 0;
+
+		/// <summary>
+		/// Checks if the stack is full.
+		/// </summary>
+		/// <returns>Whether the stack is full.</returns>
+		public bool IsFull => Capacity != -1 && CardCount >= Capacity;
+
+		/// <summary>
 		/// Generates a default deck with all 52 Cards.
 		/// </summary>
 		/// <returns>A standard deck.</returns>
@@ -76,38 +108,6 @@ namespace Klondike_Solitaire_Simulation.Stacks
 
 			return result;
 		}
-
-		/// <summary>
-		/// Creates a new empty card stack.
-		/// </summary>
-		/// <param name="capacity">The maximum capacity of this stack.</param>
-		public CardStack(int capacity = -1) => Capacity = capacity;
-
-		/// <summary>
-		/// Copies the card stack.
-		/// </summary>
-		/// <param name="original">The stack to copy.</param>
-		public CardStack(CardStack original)
-		{
-			for (int cardIndex = 0; cardIndex < original.CardCount; ++cardIndex)
-			{
-				Cards.Add(new Card(original.Cards[cardIndex]));
-			}
-
-			Capacity = original.Capacity;
-		}
-
-		/// <summary>
-		/// Checks if the stack is empty.
-		/// </summary>
-		/// <returns>Whether the stack is empty.</returns>
-		public bool IsEmpty() => Cards.Count == 0;
-
-		/// <summary>
-		/// Checks if the stack is full.
-		/// </summary>
-		/// <returns>Whether the stack is full.</returns>
-		public bool IsFull() => Capacity != -1 && CardCount >= Capacity;
 
 		/// <summary>
 		/// Shuffles the stack.
@@ -135,7 +135,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <param name="card">The card to add.</param>
 		public CardStack AddCardToTop(Card card)
 		{
-			if (IsFull())
+			if (IsFull)
 			{
 				throw new Exception("Card stack is full!");
 			}
@@ -151,7 +151,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <returns>The top card.</returns>
 		public Card RemoveTopCard()
 		{
-			if (IsEmpty())
+			if (IsEmpty)
 			{
 				throw new Exception("Card stack is empty!");
 			}
@@ -169,7 +169,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <param name="stack">The stack to add.</param>
 		public CardStack AddStackToTop(CardStack stack)
 		{
-			if (IsFull())
+			if (IsFull)
 			{
 				throw new Exception("Card stack is full!");
 			}
@@ -269,19 +269,13 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		/// <param name="card">The card to place.</param>
 		/// <returns>Whether the move is possible.</returns>
-		public virtual bool CanPlaceCardOnTop(Card card)
-		{
-			return !IsFull();
-		}
+		public virtual bool CanPlaceCardOnTop(Card card) => !IsFull;
 
 		/// <summary>
 		/// Checks whether it is possible to remove a card from the top.
 		/// </summary>
 		/// <returns>Whether it is possible.</returns>
-		public virtual bool CanRemoveCardFromTop()
-		{
-			return !IsEmpty();
-		}
+		public virtual bool CanRemoveCardFromTop() => !IsEmpty;
 
 		/// <summary>
 		/// Gets the card stack as a string.

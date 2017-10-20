@@ -37,14 +37,9 @@ namespace Klondike_Solitaire_Simulation
 	public class Card
 	{
 		/// <summary>
-		/// The suit of the card.
+		/// Whether the card is flipped (invisible).
 		/// </summary>
-		public Suit Suit;
-
-		/// <summary>
-		/// The color of the current suit.
-		/// </summary>
-		public Color Color => Suit == Spades || Suit == Clubs ? Color.Black : Color.Red;
+		public bool Flipped;
 
 		/// <summary>
 		/// The rank of the card.
@@ -52,9 +47,9 @@ namespace Klondike_Solitaire_Simulation
 		public Rank Rank;
 
 		/// <summary>
-		/// Whether the card is flipped (invisible).
+		/// The suit of the card.
 		/// </summary>
-		public bool Flipped;
+		public Suit Suit;
 
 		/// <summary>
 		/// Creates a new card.
@@ -77,6 +72,11 @@ namespace Klondike_Solitaire_Simulation
 			Rank = (Rank) Enum.Parse(typeof(Rank), original.Rank.ToString());
 			Flipped = original.Flipped;
 		}
+
+		/// <summary>
+		/// The color of the current suit.
+		/// </summary>
+		public Color Color => Suit == Spades || Suit == Clubs ? Color.Black : Color.Red;
 
 		/// <summary>
 		/// Flips the card.
