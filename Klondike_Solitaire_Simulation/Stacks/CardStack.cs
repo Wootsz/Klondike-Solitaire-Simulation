@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.XPath;
 
 namespace Klondike_Solitaire_Simulation.Stacks
 {
@@ -100,8 +97,10 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// The bottom card.
 		/// </summary>
-		public Card BottomCard {
-			get {
+		public Card BottomCard
+		{
+			get
+			{
 				if (IsEmpty())
 				{
 					throw new Exception("Card stack is empty!");
@@ -141,7 +140,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			{
 				for (int j = 0; j < Enum.GetNames(typeof(Rank)).Length; j++)
 				{
-					result.AddCardToTop(new Card((Suit)i, (Rank)j));
+					result.AddCardToTop(new Card((Suit) i, (Rank) j));
 				}
 			}
 
@@ -167,6 +166,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			{
 				Cards.Add(new Card(original.Cards[cardIndex]));
 			}
+
 			Capacity = original.Capacity;
 		}
 
