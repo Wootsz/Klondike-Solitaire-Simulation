@@ -2,7 +2,7 @@
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-	class TableauHeuristic : BaseHeuristic
+	class TableauHeuristic : Heuristic
 	{
 		public override State GetMove(State currentState, List<State> moves)
 		{

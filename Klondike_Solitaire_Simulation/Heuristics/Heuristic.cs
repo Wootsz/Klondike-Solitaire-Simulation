@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-	class BaseHeuristic
+	abstract class Heuristic
 	{
-		public virtual State GetMove(State currentState, List<State> moves) => null;
+		public abstract State GetMove(State currentState, List<State> moves);
 
 		/// <summary>
 		/// Count the amount of cards in the stock/waste, foundations and tableaux

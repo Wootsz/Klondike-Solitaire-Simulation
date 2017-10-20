@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-	class WindowsHeuristic : BaseHeuristic
+	class WindowsHeuristic : Heuristic
 	{
 		/// <summary>
 		/// Get your next move based on this Heuristic
@@ -23,19 +23,21 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 				int tableauxDif = scores[1] - scores1[1];
 				int foundationDif = scores[2] - scores1[2];
 
-				// Waste/stock to tableaux/foundations
-				int score = Math.Abs(scores[0] - scores1[0]) * (5 * tableauxDif + 10 * foundationDif);
-
-				// Tableaux to foundations
+				int score;
 				if (tableauxDif == -1 && foundationDif == 1)
 				{
+					// Tableaux to foundations
 					score = 10;
 				}
-
-				// Foundations to tableaux
-				if (tableauxDif == 1 && foundationDif == -1)
+				else if (tableauxDif == 1 && foundationDif == -1)
 				{
+					// Foundations to tableaux
 					score = -15;
+				}
+				else
+				{
+					// Waste/stock to tableaux/foundations
+					score = Math.Abs(scores[0] - scores1[0]) * (5 * tableauxDif + 10 * foundationDif);
 				}
 
 				// Turn over a tableau card
@@ -46,7 +48,8 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 
 				if (score > highScore)
 				{
-					bestStates = new List<State> {move};
+					bestStates = new List<State> { move };
+					highScore = score;
 				}
 				else if (score == highScore)
 				{

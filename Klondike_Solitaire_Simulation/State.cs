@@ -56,6 +56,11 @@ namespace Klondike_Solitaire_Simulation
 		};
 
 		/// <summary>
+		/// Used to uniquely identify this state.
+		/// </summary>
+		public string Identifier;
+
+		/// <summary>
 		/// Creates card new game state.
 		/// </summary>
 		public State()
@@ -231,38 +236,18 @@ namespace Klondike_Solitaire_Simulation
 		{
 			List<State> result = new List<State>();
 
-			int stateNumber = 1;
-
 			// State where next Cards are moved to and from the waste
 			if (Stock.IsEmpty)
 			{
-				State wasteToStock = new State(this)
-				{
-					PreviousState = this,
-					CurrentStateNumber = stateNumber
-				};
+				State wasteToStock = new State(this);
 				wasteToStock.Stock.Waste.Empty();
-
-				if (!wasteToStock.IsRepeatedState)
-				{
-					result.Add(wasteToStock);
-					++stateNumber;
-				}
+				result.Add(wasteToStock);
 			}
 			else
 			{
-				State stockToWaste = new State(this)
-				{
-					PreviousState = this,
-					CurrentStateNumber = stateNumber
-				};
+				State stockToWaste = new State(this);
 				stockToWaste.Stock.MoveToWaste();
-
-				if (!stockToWaste.IsRepeatedState)
-				{
-					result.Add(stockToWaste);
-					++stateNumber;
-				}
+				result.Add(stockToWaste);
 			}
 
 			// All possible card movements
@@ -276,51 +261,66 @@ namespace Klondike_Solitaire_Simulation
 					foreach (CardStack targetStack in CardStacks)
 					{
 						// Prevent moving more than one card to or from a foundation
-						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> {sourceStack.TopCard} : sourceStack.MovableCards)
+						List<Card> availableCards = sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> {sourceStack.TopCard} : sourceStack.MovableCards;
+						foreach (Card movableCard in
+							from movableCard in availableCards
+							let isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty
+							where !isUselessMove && targetStack.CanPlaceCardOnTop(movableCard)
+							select movableCard)
 						{
-							// Prevent moving cards between empty stacks and itself
-							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty;
-
-							if (!isUselessMove && targetStack.CanPlaceCardOnTop(movableCard))
+							// Prevent nearly identical moves
+							if (targetStack is FoundationCardStack)
 							{
-								// Prevent nearly identical moves
-								if (targetStack is FoundationCardStack)
+								if (foundFoundation)
 								{
-									if (foundFoundation)
-									{
-										continue;
-									}
-									else
-									{
-										foundFoundation = true;
-									}
+									continue;
 								}
-
-								// Clone state
-								State newState = new State(this)
+								else
 								{
-									PreviousState = this,
-									CurrentStateNumber = stateNumber
-								};
-
-								Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
-
-								// Make move in new state
-								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
-
-								// Add new state
-								if (!newState.IsRepeatedState)
-								{
-									result.Add(newState);
-									++stateNumber;
+									foundFoundation = true;
 								}
 							}
+
+							// Clone state
+							State newState = new State(this);
+
+							Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
+
+							// Make move in new state
+							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
+
+							// Add new state
+							result.Add(newState);
 						}
 					}
 				}
 			}
 
-			return result;
+			// Set properties
+			for (int resultIndex = 0; resultIndex < result.Count; ++ resultIndex)
+			{
+				State state = result[resultIndex];
+
+				state.PreviousState = this;
+				state.CurrentStateNumber = resultIndex + 1;
+				state.RefreshIdentifier();
+			}
+
+			return result.Where(o => !o.IsRepeatedState).ToList();
+		}
+
+		/// <summary>
+		/// Refreshes this state's identifier.
+		/// </summary>
+		public State RefreshIdentifier()
+		{
+			Identifier = "";
+			foreach (CardStack stack in CardStacks)
+			{
+				Identifier += stack + "\n";
+			}
+
+			return this;
 		}
 
 		/// <summary>
@@ -330,6 +330,8 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>Whether the states are the same.</returns>
 		public bool IsSame(State otherState)
 		{
+			return Identifier == otherState.Identifier;
+
 			for (int stackIndex = 0; stackIndex < CardStacks.Count; ++stackIndex)
 			{
 				if (CardStacks[stackIndex].CardCount != otherState.CardStacks[stackIndex].CardCount)
