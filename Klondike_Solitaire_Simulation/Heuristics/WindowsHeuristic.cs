@@ -39,7 +39,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 				}
 
 				// Turn over a tableau card
-				if (scores[3] < scores1[3] || (tableauxDif == -1 && scores[3] == scores1[3]))
+				if (scores[3] < scores1[3] || tableauxDif == -1 && scores[3] == scores1[3])
 				{
 					score += 5;
 				}

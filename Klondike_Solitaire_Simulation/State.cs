@@ -278,7 +278,7 @@ namespace Klondike_Solitaire_Simulation
 					foreach (CardStack targetStack in CardStacks)
 					{
 						// Prevent moving more than one card to or from a foundation
-						foreach (Card movableCard in ((sourceStack is FoundationCardStack || targetStack is FoundationCardStack) ? new List<Card>() {sourceStack.TopCard} : sourceStack.MovableCards))
+						foreach (Card movableCard in sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card>() {sourceStack.TopCard} : sourceStack.MovableCards)
 						{
 							// Prevent moving cards between empty stacks and itself
 							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty;
