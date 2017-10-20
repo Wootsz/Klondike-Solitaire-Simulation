@@ -2,7 +2,7 @@
 
 namespace Klondike_Solitaire_Simulation
 {
-	public class Rng
+	public class RandomNumberGenerator
 	{
 		private const int A = 2416;
 		private const int C = 374441;
@@ -17,7 +17,7 @@ namespace Klondike_Solitaire_Simulation
 		/// Creates a new random generator.
 		/// </summary>
 		/// <param name="seed">The given seed.</param>
-		public Rng(long seed = -1)
+		public RandomNumberGenerator(long seed = -1)
 		{
 			// Check if a seed has been given
 			if (seed < 0)

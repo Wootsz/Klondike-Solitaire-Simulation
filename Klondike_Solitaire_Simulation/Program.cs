@@ -15,7 +15,7 @@ namespace Klondike_Solitaire_Simulation
 			Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
 			Console.Title = "Klondike Solitaire Simulator";
 
-			Rng r = new Rng();
+			RandomNumberGenerator r = new RandomNumberGenerator();
 
 			// Initialize the game state
 			//State startState = new State();
