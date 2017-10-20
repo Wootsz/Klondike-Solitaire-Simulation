@@ -25,27 +25,40 @@ namespace Klondike_Solitaire_Simulation
 			//Console.WriteLine("Possible end states:");
 
 			WindowsHeuristic H1 = new WindowsHeuristic();
+            int H1Wincounter = 0;
+            int iterations = 10;
 
-			while (true)
+			for(int i = 0; i < iterations; i++)
 			{
 				State state = new State(); //startState;
+                Console.WriteLine(i);
 
 				// Make moves until you've reached an end state
 				List<State> moves;
 				while ((moves = state.GetMoves()).Count > 0)
 				{
-					//state = moves[r.Next(moves.Count)];
-					state = H1.GetMove(state, moves);
-				}
+                    if(!state.IsWinState)
+                        state = H1.GetMove(state, moves);
+                    else if (state.IsWinState)
+                    {
+                        H1Wincounter++;
+                        Console.WriteLine("Win");
+                    }
 
+                    //state = moves[r.Next(moves.Count)];
+
+                }
+                /*
 				string stateText = state.ToString(true, 10);
 				Console.WriteLine(stateText);
 				StreamWriter writer = new StreamWriter(@"C:\Users\qub1\Desktop\Output.txt");
 				writer.Write(stateText);
 				writer.Close();
-
-				Console.ReadLine();
+                */
 			}
-		}
+
+            Console.WriteLine(H1Wincounter/iterations * 100);
+            Console.ReadLine();
+        }
 	}
 }
