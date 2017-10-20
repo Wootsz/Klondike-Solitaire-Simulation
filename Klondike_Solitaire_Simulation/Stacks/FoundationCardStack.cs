@@ -28,12 +28,12 @@
 		public override bool CanPlaceCardOnTop(Card card)
 		{
 			// First check if the foundation is empty
-			if (IsEmpty())
+			if (IsEmpty)
 			{
 				// If it's empty, the card only needs to be an ace
 				return card.Rank == Rank.Ace;
 			}
-			else if (IsFull())
+			else if (IsFull)
 			{
 				return false;
 			}

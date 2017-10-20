@@ -11,64 +11,9 @@ namespace Klondike_Solitaire_Simulation
 		public const int WasteCardAmount = 3;
 
 		/// <summary>
-		/// The previous state.
-		/// </summary>
-		public State PreviousState;
-
-		/// <summary>
-		/// The total number of this state.
-		/// </summary>
-		public List<int> TotalStateNumber
-		{
-			get
-			{
-				if (PreviousState == null)
-				{
-					return new List<int>()
-					{
-						CurrentStateNumber
-					};
-				}
-				else
-				{
-					List<int> result = PreviousState.TotalStateNumber;
-
-					result.Add(CurrentStateNumber);
-
-					return result;
-				}
-			}
-		}
-
-		/// <summary>
 		/// The current number of this state.
 		/// </summary>
 		public int CurrentStateNumber = 1;
-
-		/// <summary>
-		/// Whether this state is a repeat of a previous state.
-		/// </summary>
-		public bool IsRepeatedState
-		{
-			get
-			{
-				State currentState = this;
-				while ((currentState = currentState.PreviousState) != null)
-				{
-					if (IsSame(currentState))
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// The Cards left in the stock.
-		/// </summary>
-		public StockCardStack Stock = new StockCardStack(WasteCardAmount);
 
 		/// <summary>
 		/// The foundations where the final piles can be placed.
@@ -80,6 +25,16 @@ namespace Klondike_Solitaire_Simulation
 			new FoundationCardStack(),
 			new FoundationCardStack()
 		};
+
+		/// <summary>
+		/// The previous state.
+		/// </summary>
+		public State PreviousState;
+
+		/// <summary>
+		/// The Cards left in the stock.
+		/// </summary>
+		public StockCardStack Stock = new StockCardStack(WasteCardAmount);
 
 		/// <summary>
 		/// The actual game stacks where the Cards are moved to and from.
@@ -94,40 +49,6 @@ namespace Klondike_Solitaire_Simulation
 			new TableauCardStack(),
 			new TableauCardStack()
 		};
-
-		/// <summary>
-		/// All card stacks.
-		/// </summary>
-		public List<CardStack> CardStacks
-		{
-			get
-			{
-				List<CardStack> result = new List<CardStack>()
-				{
-					Stock,
-					Stock.Waste
-				};
-				result.AddRange(Foundations);
-				result.AddRange(Tableaus);
-
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// Whether this state is an end state.
-		/// </summary>
-		public bool IsEndState => GetMoves().Count == 0;
-
-		/// <summary>
-		/// Whether this state is a win state.
-		/// </summary>
-		public bool IsWinState => Foundations.All(foundation => foundation.CardCount == 13);
-
-		/// <summary>
-		/// The amount of moves made to get to this state.
-		/// </summary>
-		public int MovesMade => TotalStateNumber.Count - 1;
 
 		/// <summary>
 		/// Creates card new game state.
@@ -179,6 +100,86 @@ namespace Klondike_Solitaire_Simulation
 			CurrentStateNumber = original.CurrentStateNumber;
 			//PreviousState = new State(original.PreviousState);
 		}
+
+		/// <summary>
+		/// The total number of this state.
+		/// </summary>
+		public List<int> TotalStateNumber
+		{
+			get
+			{
+				if (PreviousState == null)
+				{
+					return new List<int>()
+					{
+						CurrentStateNumber
+					};
+				}
+				else
+				{
+					List<int> result = PreviousState.TotalStateNumber;
+
+					result.Add(CurrentStateNumber);
+
+					return result;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Whether this state is a repeat of a previous state.
+		/// </summary>
+		public bool IsRepeatedState
+		{
+			get
+			{
+				State currentState = this;
+				while ((currentState = currentState.PreviousState) != null)
+				{
+					if (IsSame(currentState))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// All card stacks.
+		/// </summary>
+		public List<CardStack> CardStacks
+		{
+			get
+			{
+				List<CardStack> result = new List<CardStack>()
+				{
+					Stock,
+					Stock.Waste
+				};
+
+				result.AddRange(Foundations);
+				result.AddRange(Tableaus);
+
+				return result;
+			}
+		}
+
+		/// <summary>
+		/// Whether this state is an end state.
+		/// </summary>
+		public bool IsEndState => GetMoves().Count == 0;
+
+		/// <summary>
+		/// Whether this state is a win state.
+		/// </summary>
+		public bool IsWinState => Foundations.All(foundation => foundation.CardCount == 13);
+
+		/// <summary>
+		/// The amount of moves made to get to this state.
+		/// </summary>
+		public int MovesMade => TotalStateNumber.Count - 1;
 
 		/// <summary>
 		/// Gets card string representation of the current state.
@@ -236,7 +237,7 @@ namespace Klondike_Solitaire_Simulation
 			int stateNumber = 1;
 
 			// State where next Cards are moved to and from the waste
-			if (Stock.IsEmpty())
+			if (Stock.IsEmpty)
 			{
 				State wasteToStock = new State(this)
 				{
@@ -270,7 +271,7 @@ namespace Klondike_Solitaire_Simulation
 			// All possible card movements
 			foreach (CardStack sourceStack in CardStacks)
 			{
-				if (!sourceStack.IsEmpty() && sourceStack.CanRemoveCardFromTop())
+				if (!sourceStack.IsEmpty && sourceStack.CanRemoveCardFromTop())
 				{
 					// Prevent nearly identical moves
 					bool foundFoundation = false;
@@ -281,7 +282,7 @@ namespace Klondike_Solitaire_Simulation
 						foreach (Card movableCard in ((sourceStack is FoundationCardStack || targetStack is FoundationCardStack) ? new List<Card>() {sourceStack.TopCard} : sourceStack.MovableCards))
 						{
 							// Prevent moving cards between empty stacks and itself
-							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty();
+							bool isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty;
 
 							if (!isUselessMove && targetStack.CanPlaceCardOnTop(movableCard))
 							{
