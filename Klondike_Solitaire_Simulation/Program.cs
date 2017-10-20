@@ -32,26 +32,19 @@ namespace Klondike_Solitaire_Simulation
 			Parallel.For(0, iterations, index =>
 			{
 				State state = new State(); //startState;
+				Console.WriteLine(index);
 
 				// Make moves until you've reached an end state
 				List<State> moves;
 				while ((moves = state.GetMoves()).Count > 0)
 				{
-					if (state.IsEndState)
-					{
-						if (state.IsWinState)
-						{
-							Console.WriteLine(index + " - Loss");
-						}
-						else
-						{
-							++H1Wincounter;
-							Console.WriteLine(index + " - Win");
-						}
-					}
-					else
-					{
+					if (!state.IsWinState)
 						state = H1.GetMove(state, moves);
+					else if (state.IsWinState)
+					{
+						H1Wincounter++;
+						Console.WriteLine("Win");
+						break;
 					}
 
 					//state = moves[r.Next(moves.Count)];
