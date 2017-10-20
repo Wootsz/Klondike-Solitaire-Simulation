@@ -14,23 +14,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// Amount of flipped Cards.
 		/// </summary>
-		public int FlippedCardCount
-		{
-			get
-			{
-				int result = 0;
-
-				foreach (Card card in Cards)
-				{
-					if (card.Flipped)
-					{
-						++result;
-					}
-				}
-
-				return result;
-			}
-		}
+		public int FlippedCardCount => Cards.Count(card => card.Flipped);
 
 		/// <summary>
 		/// Amount of normal Cards.
@@ -50,44 +34,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// All flipped cards, from lowest to highest.
 		/// </summary>
-		public List<Card> FlippedCards
-		{
-			get
-			{
-				List<Card> result = new List<Card>();
-
-				foreach (Card card in Cards)
-				{
-					if (card.Flipped)
-					{
-						result.Add(card);
-					}
-				}
-
-				return result;
-			}
-		}
+		public List<Card> FlippedCards => Cards.Where(card => card.Flipped).ToList();
 
 		/// <summary>
 		/// All normal cards, from lowest to highest.
 		/// </summary>
-		public List<Card> NormalCards
-		{
-			get
-			{
-				List<Card> result = new List<Card>();
-
-				foreach (Card card in Cards)
-				{
-					if (!card.Flipped)
-					{
-						result.Add(card);
-					}
-				}
-
-				return result;
-			}
-		}
+		public List<Card> NormalCards => Cards.Where(card => !card.Flipped).ToList();
 
 		/// <summary>
 		/// All cards that can be moved.
@@ -97,35 +49,13 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <summary>
 		/// The bottom card.
 		/// </summary>
-		public Card BottomCard
-		{
-			get
-			{
-				if (IsEmpty())
-				{
-					throw new Exception("Card stack is empty!");
-				}
-
-				return Cards.First();
-			}
-		}
+		public Card BottomCard => Cards.First();
 
 		/// <summary>
 		/// Peeks at the top card.
 		/// </summary>
 		/// <returns>The top card.</returns>
-		public Card TopCard
-		{
-			get
-			{
-				if (IsEmpty())
-				{
-					throw new Exception("Card stack is empty!");
-				}
-
-				return Cards.Last();
-			}
-		}
+		public Card TopCard => Cards.Last();
 
 		/// <summary>
 		/// Generates a default deck with all 52 Cards.
@@ -151,10 +81,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Creates a new empty card stack.
 		/// </summary>
 		/// <param name="capacity">The maximum capacity of this stack.</param>
-		public CardStack(int capacity = -1)
-		{
-			Capacity = capacity;
-		}
+		public CardStack(int capacity = -1) => Capacity = capacity;
 
 		/// <summary>
 		/// Copies the card stack.
@@ -174,19 +101,13 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Checks if the stack is empty.
 		/// </summary>
 		/// <returns>Whether the stack is empty.</returns>
-		public bool IsEmpty()
-		{
-			return Cards.Count == 0;
-		}
+		public bool IsEmpty() => Cards.Count == 0;
 
 		/// <summary>
 		/// Checks if the stack is full.
 		/// </summary>
 		/// <returns>Whether the stack is full.</returns>
-		public bool IsFull()
-		{
-			return Capacity != -1 && CardCount >= Capacity;
-		}
+		public bool IsFull() => Capacity != -1 && CardCount >= Capacity;
 
 		/// <summary>
 		/// Shuffles the stack.
@@ -197,7 +118,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 
 			while (Cards.Count > 0)
 			{
-				int randomCard = Utility.random.Next(0, Cards.Count);
+				int randomCard = Utility.Random.Next(0, Cards.Count);
 
 				newCards.Add(Cards[randomCard]);
 				Cards.RemoveAt(randomCard);
@@ -311,13 +232,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// <param name="otherStack">The other stack.</param>
 		/// <param name="amount">The amount of Cards to move.</param>
 		/// <param name="flip">Whether to flip the Cards as they are moved.</param>
-		/// <param name="flipNext">Whether to flip the next card after all Cards were moved.</param>
 		/// <param name="reverse">Whether to reverse the order of the Cards.</param>
 		public virtual CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true)
 		{
 			for (int i = 0; i < amount; ++i)
 			{
-				Card card = null;
+				Card card;
 				if (reverse)
 				{
 					card = RemoveTopCard();

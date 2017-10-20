@@ -2,17 +2,20 @@
 {
 	public class TableauCardStack : CardStack
 	{
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new tableau stack.
 		/// </summary>
 		public TableauCardStack() { }
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the tableau stack.
 		/// </summary>
 		/// <param name="original">The original tablue stack.</param>
-		public TableauCardStack(TableauCardStack original) : base(original) { }
+		public TableauCardStack(CardStack original) : base(original) { }
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Checks if a move is possible given a card.
 		/// </summary>

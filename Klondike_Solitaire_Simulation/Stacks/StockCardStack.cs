@@ -12,6 +12,7 @@
 		/// </summary>
 		public int MoveAmount;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new stock stack.
 		/// </summary>
@@ -22,14 +23,17 @@
 			MoveAmount = moveAmount;
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the stock stack.
 		/// </summary>
 		/// <param name="original">The original stock stack.</param>
 		public StockCardStack(StockCardStack original) : base(original)
 		{
-			Waste = new WasteCardStack(original.Waste);
-			Waste.Stock = this;
+			Waste = new WasteCardStack(original.Waste)
+			{
+				Stock = this
+			};
 			MoveAmount = original.MoveAmount;
 		}
 
@@ -43,14 +47,8 @@
 			return this;
 		}
 
-		public override bool CanPlaceCardOnTop(Card card)
-		{
-			return false;
-		}
+		public override bool CanPlaceCardOnTop(Card card) => false;
 
-		public override bool CanRemoveCardFromTop()
-		{
-			return false;
-		}
+		public override bool CanRemoveCardFromTop() => false;
 	}
 }

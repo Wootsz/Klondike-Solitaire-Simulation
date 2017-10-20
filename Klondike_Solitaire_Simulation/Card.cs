@@ -37,8 +37,6 @@ namespace Klondike_Solitaire_Simulation
 
 	public class Card
 	{
-		public const bool UseShorthand = true;
-
 		/// <summary>
 		/// The suit of the card.
 		/// </summary>
@@ -76,8 +74,8 @@ namespace Klondike_Solitaire_Simulation
 		/// <param name="original">The card to copy.</param>
 		public Card(Card original)
 		{
-			Suit = (Suit) Enum.Parse(typeof(Suit), original.Suit.ToString());
-			Rank = (Rank) Enum.Parse(typeof(Rank), original.Rank.ToString());
+			Suit = (Suit)Enum.Parse(typeof(Suit), original.Suit.ToString());
+			Rank = (Rank)Enum.Parse(typeof(Rank), original.Rank.ToString());
 			Flipped = original.Flipped;
 		}
 
@@ -97,36 +95,29 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>A string representation of the card.</returns>
 		public override string ToString()
 		{
-			if (UseShorthand)
+			int rankNumber = (int)Rank + 1;
+			string rankLetter = Rank.ToString()[0].ToString();
+			string suitLetter = "";
+			switch (Suit)
 			{
-				int rankNumber = (int) Rank + 1;
-				string rankLetter = Rank.ToString()[0].ToString();
-				string suitLetter = "";
-				switch (Suit)
-				{
-					case Clubs:
-						suitLetter = "♣";
-						break;
+				case Clubs:
+					suitLetter = "♣";
+					break;
 
-					case Diamonds:
-						suitLetter = "♦";
-						break;
+				case Diamonds:
+					suitLetter = "♦";
+					break;
 
-					case Hearts:
-						suitLetter = "♥";
-						break;
+				case Hearts:
+					suitLetter = "♥";
+					break;
 
-					case Spades:
-						suitLetter = "♠";
-						break;
-				}
-
-				return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
+				case Spades:
+					suitLetter = "♠";
+					break;
 			}
-			else
-			{
-				return Rank + " of " + Suit + " (" + (Flipped ? "flipped" : "normal") + ")";
-			}
+
+			return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
 		}
 	}
 }

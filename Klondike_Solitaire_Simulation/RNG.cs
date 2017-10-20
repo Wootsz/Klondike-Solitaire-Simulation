@@ -2,39 +2,39 @@
 
 namespace Klondike_Solitaire_Simulation
 {
-	public class RNG
+	public class Rng
 	{
-		private const int a = 2416;
-		private const int c = 374441;
-		private const int m = 1771875;
+		private const int A = 2416;
+		private const int C = 374441;
+		private const int M = 1771875;
 
 		/// <summary>
 		/// The current seed.
 		/// </summary>
-		private long current_seed;
+		private long _currentSeed;
 
 		/// <summary>
 		/// Creates a new random generator.
 		/// </summary>
 		/// <param name="seed">The given seed.</param>
-		public RNG(long seed = -1)
+		public Rng(long seed = -1)
 		{
 			// Check if a seed has been given
 			if (seed < 0)
 			{
 				TimeSpan span = DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0));
-				current_seed = (int) span.TotalSeconds;
+				_currentSeed = (int) span.TotalSeconds;
 			}
 			else
 			{
-				current_seed = seed;
+				_currentSeed = seed;
 			}
 		}
 
 		/// <summary>
 		/// Get the next 'random' number in line.
 		/// </summary>
-		public long GetNumber() => current_seed = (a * current_seed + c) % m;
+		public long GetNumber() => _currentSeed = (A * _currentSeed + C) % M;
 
 		/// <summary>
 		/// Returns a 'random' number between 0 and 1.

@@ -14,25 +14,21 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		public StockCardStack Stock;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new waste stack.
 		/// </summary>
 		/// <param name="stock">The stock stack.</param>
-		public WasteCardStack(StockCardStack stock)
-		{
-			Stock = stock;
-		}
+		public WasteCardStack(StockCardStack stock) => Stock = stock;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the waste stack.
 		/// </summary>
 		/// <param name="original">The original waste stack.</param>
-		public WasteCardStack(WasteCardStack original) : base(original) { }
+		public WasteCardStack(CardStack original) : base(original) { }
 
-		public override bool CanPlaceCardOnTop(Card card)
-		{
-			return false;
-		}
+		public override bool CanPlaceCardOnTop(Card card) => false;
 
 		/// <summary>
 		/// Empties the waste back into the stock.

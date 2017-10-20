@@ -2,17 +2,20 @@
 {
 	public class FoundationCardStack : CardStack
 	{
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new foundation stack.
 		/// </summary>
 		public FoundationCardStack() { }
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the foundation stack.
 		/// </summary>
 		/// <param name="original">The original foundation stack.</param>
 		public FoundationCardStack(FoundationCardStack original) : base(original) { }
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Checks if a move is possible given a card.
 		/// </summary>

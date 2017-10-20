@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using Klondike_Solitaire_Simulation.Stacks;
 
 namespace Klondike_Solitaire_Simulation
 {
 	public class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 			Console.WriteLine("Welcome to the Klondike Solitaire Simulator!");
 			Console.Title = "Klondike Solitaire Simulator";
 
-			RNG r = new RNG();
+			Rng r = new Rng();
 
 			// Initialize the game state
 			//State startState = new State();
@@ -46,7 +46,7 @@ namespace Klondike_Solitaire_Simulation
 			}
 		}
 
-		static State WindowsScoreHeuristic(State state1, List<State> moves, RNG r)
+		static State WindowsScoreHeuristic(State state1, List<State> moves, Rng r)
 		{
 			int[] scores1 = GetScore(state1);
 			int highScore = -20;
@@ -86,17 +86,16 @@ namespace Klondike_Solitaire_Simulation
 		static int[] GetScore(State s)
 		{
 			int foundationScore = 0, tableauScore = 0, faceDownCount = 0;
-			foreach (CardStack tableau in s.Tableaus)
+
+			foreach (TableauCardStack tableau in s.Tableaus)
 			{
 				tableauScore += tableau.CardCount;
 				faceDownCount += tableau.FlippedCardCount;
 			}
-			foreach (CardStack foundation in s.Foundations)
-			{
-				foundationScore += foundation.CardCount;
-			}
 
-			return new int[4] { s.Stock.CardCount + s.Stock.Waste.CardCount, tableauScore, foundationScore, faceDownCount };
+			foundationScore += s.Foundations.Sum(foundation => foundation.CardCount);
+
+			return new[] { s.Stock.CardCount + s.Stock.Waste.CardCount, tableauScore, foundationScore, faceDownCount };
 		}
 	}
 }
