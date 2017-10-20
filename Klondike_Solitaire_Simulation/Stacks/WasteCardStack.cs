@@ -26,7 +26,9 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// Copies the waste stack.
 		/// </summary>
 		/// <param name="original">The original waste stack.</param>
-		public WasteCardStack(CardStack original) : base(original) { }
+		public WasteCardStack(CardStack original) : base(original)
+		{
+		}
 
 		public override bool CanPlaceCardOnTop(Card card) => false;
 

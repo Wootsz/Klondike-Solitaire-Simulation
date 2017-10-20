@@ -6,14 +6,18 @@
 		/// <summary>
 		/// Creates a new foundation stack.
 		/// </summary>
-		public FoundationCardStack() { }
+		public FoundationCardStack()
+		{
+		}
 
 		/// <inheritdoc />
 		/// <summary>
 		/// Copies the foundation stack.
 		/// </summary>
 		/// <param name="original">The original foundation stack.</param>
-		public FoundationCardStack(FoundationCardStack original) : base(original) { }
+		public FoundationCardStack(FoundationCardStack original) : base(original)
+		{
+		}
 
 		/// <inheritdoc />
 		/// <summary>

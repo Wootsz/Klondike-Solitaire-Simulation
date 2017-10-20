@@ -1,5 +1,4 @@
 ﻿using System;
-
 using static Klondike_Solitaire_Simulation.Suit;
 
 namespace Klondike_Solitaire_Simulation
@@ -74,8 +73,8 @@ namespace Klondike_Solitaire_Simulation
 		/// <param name="original">The card to copy.</param>
 		public Card(Card original)
 		{
-			Suit = (Suit)Enum.Parse(typeof(Suit), original.Suit.ToString());
-			Rank = (Rank)Enum.Parse(typeof(Rank), original.Rank.ToString());
+			Suit = (Suit) Enum.Parse(typeof(Suit), original.Suit.ToString());
+			Rank = (Rank) Enum.Parse(typeof(Rank), original.Rank.ToString());
 			Flipped = original.Flipped;
 		}
 
@@ -95,7 +94,7 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>A string representation of the card.</returns>
 		public override string ToString()
 		{
-			int rankNumber = (int)Rank + 1;
+			int rankNumber = (int) Rank + 1;
 			string rankLetter = Rank.ToString()[0].ToString();
 			string suitLetter = "";
 			switch (Suit)

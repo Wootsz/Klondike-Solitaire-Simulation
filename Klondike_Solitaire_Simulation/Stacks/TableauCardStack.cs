@@ -6,14 +6,18 @@
 		/// <summary>
 		/// Creates a new tableau stack.
 		/// </summary>
-		public TableauCardStack() { }
+		public TableauCardStack()
+		{
+		}
 
 		/// <inheritdoc />
 		/// <summary>
 		/// Copies the tableau stack.
 		/// </summary>
 		/// <param name="original">The original tablue stack.</param>
-		public TableauCardStack(CardStack original) : base(original) { }
+		public TableauCardStack(CardStack original) : base(original)
+		{
+		}
 
 		/// <inheritdoc />
 		/// <summary>
