@@ -193,6 +193,8 @@ namespace Klondike_Solitaire_Simulation
 
 			result += "\n" + indent + "  Is end state: " + IsEndState;
 
+			result += "\n" + indent + "  Is win state: " + IsWinState;
+
 			result += "\n" + indent + "  Moves before made so far: " + MovesMade;
 
 			// Output stock and waste
@@ -200,10 +202,7 @@ namespace Klondike_Solitaire_Simulation
 			result += "\n" + indent + "  Waste: " + Stock.Waste;
 
 			// Output foundations
-			foreach (FoundationCardStack foundation in Foundations)
-			{
-				result += "\n" + indent + "  Foundation: " + foundation;
-			}
+			result = Foundations.Aggregate(result, (current, foundation) => current + ("\n" + indent + "  Foundation: " + foundation));
 
 			// Output tableaus
 			result = Tableaus.Aggregate(result, (current, tableau) => current + ("\n" + indent + "  Tableau: " + tableau));
@@ -246,11 +245,11 @@ namespace Klondike_Solitaire_Simulation
 				};
 				wasteToStock.Stock.Waste.Empty();
 
-				if (!wasteToStock.IsRepeatedState)
-				{
+				//if (!wasteToStock.IsRepeatedState)
+				//{
 					result.Add(wasteToStock);
 					++stateNumber;
-				}
+				//}
 			}
 			else
 			{
@@ -261,11 +260,11 @@ namespace Klondike_Solitaire_Simulation
 				};
 				stockToWaste.Stock.MoveToWaste();
 
-				if (!stockToWaste.IsRepeatedState)
-				{
+				//if (!stockToWaste.IsRepeatedState)
+				//{
 					result.Add(stockToWaste);
 					++stateNumber;
-				}
+				//}
 			}
 
 			// All possible card movements
@@ -312,11 +311,11 @@ namespace Klondike_Solitaire_Simulation
 								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
 
 								// Add new state
-								if (!newState.IsRepeatedState)
-								{
+								//if (!newState.IsRepeatedState)
+								//{
 									result.Add(newState);
 									++stateNumber;
-								}
+								//}
 							}
 						}
 					}
