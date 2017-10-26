@@ -41,7 +41,7 @@ namespace Klondike_Solitaire_Simulation
 				List<State> moves;
 				while (!state.IsWinState && (moves = state.GetMoves()).Count > 0)
 				{
-					state = new WindowsHeuristic().GetMove(state, moves);
+                    state = new RandomHeuristic().GetMove(state, moves);//new WoutersHeuristic().GetMove(state, moves); //new WindowsHeuristic().GetMove(state, moves);
 				}
 
 				lock (writeLock)

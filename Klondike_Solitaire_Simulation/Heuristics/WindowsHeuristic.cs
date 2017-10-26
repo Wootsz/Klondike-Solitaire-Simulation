@@ -20,8 +20,8 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 			foreach (State move in moves)
 			{
 				int[] scores = GetScore(move);
-				int tableauxDif = scores[1] - scores1[1];
-				int foundationDif = scores[2] - scores1[2];
+				int tableauxDif = scores[tablIndex] - scores1[tablIndex];
+				int foundationDif = scores[foundIndex] - scores1[foundIndex];
 
 				int score;
 				if (tableauxDif == -1 && foundationDif == 1)
@@ -37,11 +37,11 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 				else
 				{
 					// Waste/stock to tableaux/foundations
-					score = Math.Abs(scores[0] - scores1[0]) * (5 * tableauxDif + 10 * foundationDif);
+					score = Math.Abs(scores[stowasIndex] - scores1[stowasIndex]) * (5 * tableauxDif + 10 * foundationDif);
 				}
 
 				// Turn over a tableau card
-				if (scores[3] < scores1[3] || tableauxDif == -1 && scores[3] == scores1[3])
+				if (scores[flipIndex] < scores1[flipIndex] || tableauxDif == -1 && scores[flipIndex] == scores1[flipIndex])
 				{
 					score += 5;
 				}
