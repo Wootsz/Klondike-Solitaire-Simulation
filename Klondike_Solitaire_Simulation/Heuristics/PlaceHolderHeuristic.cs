@@ -17,8 +17,11 @@ namespace Klondike_Solitaire_Simulation.Heuristics
             Rank highestTotalFoundationRank = Rank.Ace;
             for (int i = 1; i < 5; i++)
             {
-                if (currentState.CardStacks[i].TopCard.Rank < highestTotalFoundationRank)
-                    highestTotalFoundationRank = currentState.CardStacks[i].TopCard.Rank;
+                if (!currentState.CardStacks[i].IsEmpty)
+                {
+                    if (currentState.CardStacks[i].TopCard.Rank < highestTotalFoundationRank)
+                        highestTotalFoundationRank = currentState.CardStacks[i].TopCard.Rank;
+                }
             }
 
             foreach (State move in moves)
