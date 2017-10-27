@@ -39,9 +39,10 @@ namespace Klondike_Solitaire_Simulation
 
 				// Make moves until you've reached an end state
 				List<State> moves;
+                Heuristic heuristic = new RandomHeuristic();
 				while (!state.IsWinState && (moves = state.GetMoves()).Count > 0)
 				{
-                    state = new RandomHeuristic().GetMove(state, moves);//new WoutersHeuristic().GetMove(state, moves); //new WindowsHeuristic().GetMove(state, moves);
+                    state = heuristic.GetMove(state, moves);
 				}
 
 				lock (writeLock)
