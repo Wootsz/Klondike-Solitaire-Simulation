@@ -12,15 +12,16 @@ namespace Klondike_Solitaire_Simulation.Heuristics
         {
             Rank highestRank = Rank.Ace;
             List<State> bestMoves = new List<State>();
+            List<Card> moveAbleCards = new List<Card>();
 
-            for(int i = 0; i < currentState.moveAbleCards.Count; i++)
+            for(int i = 0; i < moveAbleCards.Count; i++)
             {
-                if(currentState.moveAbleCards[i].Rank > highestRank)
+                if(moveAbleCards[i].Rank > highestRank)
                 {
-                    highestRank = currentState.moveAbleCards[i].Rank;
+                    highestRank = moveAbleCards[i].Rank;
                     bestMoves = new List<State>() { moves[i] };
                 }
-                else if (currentState.moveAbleCards[i].Rank == highestRank)
+                else if (moveAbleCards[i].Rank == highestRank)
                 {
                     bestMoves.Add(moves[i]);
                 }
