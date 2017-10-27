@@ -36,7 +36,9 @@ namespace Klondike_Solitaire_Simulation
 			{
 				//new RandomHeuristic(),
 				//new TableauHeuristic(),
-				new WindowsHeuristic()
+				//new WindowsHeuristic(),
+				new HighestRankHeuristic(),
+				//new PlaceHoldersHeuristic()
 			};
 
 			List<float> winPercentage = new List<float>(new float[heuristics.Count]);
@@ -48,7 +50,7 @@ namespace Klondike_Solitaire_Simulation
 
 				int h1Wincounter = 0;
 				int iteration = 1;
-				int iterations = 1000;
+				int iterations = 100;
 
 				Parallel.For(0, iterations, index =>
 				//for(int index = 0; index < iterations; ++index)
@@ -103,7 +105,7 @@ namespace Klondike_Solitaire_Simulation
 					//writer.Flush();
 					//writer.Close();
 
-					//System.IO.File.WriteAllLines(@"D:\Output\" + index + ".txt", state.ToString(true, false).Split('\n'));
+					System.IO.File.WriteAllLines(@"D:\Output\" + index + ".txt", state.ToString(true, false).Split('\n'));
 				});
 
 				lock (winPercentageLock)
