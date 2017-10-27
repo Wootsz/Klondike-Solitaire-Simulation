@@ -59,10 +59,7 @@ namespace Klondike_Solitaire_Simulation
 						state = heuristic.GetMove(state, moves);
 					}
 
-					lock (writeLock)
-					{
-						Console.Write("[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + ": ");
-					}
+					string output = "[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + ": ";
 
 					lock (iterationLock)
 					{
@@ -78,23 +75,19 @@ namespace Klondike_Solitaire_Simulation
 							++h1Wincounter;
 						}
 
-						lock (writeLock)
-						{
-							Console.Write("Win");
-						}
+						output += "Win";
 					}
 					else
 					{
 						// Otherwise, show we lost
-						lock (writeLock)
-						{
-							Console.Write("Loss");
-						}
+						output += "Loss";
 					}
+
+					output += " after " + state.MovesMade + " moves";
 
 					lock (writeLock)
 					{
-						Console.WriteLine(" after " + state.MovesMade + " moves");
+						Console.WriteLine(output);
 					}
 				});
 
