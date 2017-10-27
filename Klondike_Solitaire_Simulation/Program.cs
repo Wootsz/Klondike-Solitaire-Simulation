@@ -27,11 +27,14 @@ namespace Klondike_Solitaire_Simulation
 
 			//Console.WriteLine("Possible end states:");
 			Object writeLock = new Object();
+			Object iterationLock = new Object();
+			Object h1WincounterLock = new Object();
+			Object winPercentageLock = new Object();
 
 			List<Heuristic> heuristics = new List<Heuristic>
 			{
-				//new RandomHeuristic(),
-				//new TableauHeuristic(),
+				new RandomHeuristic(),
+				new TableauHeuristic(),
 				new WindowsHeuristic()
 			};
 
@@ -43,7 +46,7 @@ namespace Klondike_Solitaire_Simulation
 
 				int h1Wincounter = 0;
 				int iteration = 1;
-				int iterations = 100;
+				int iterations = 500;
 
 				Parallel.For(0, iterations, index =>
 				{
@@ -59,29 +62,45 @@ namespace Klondike_Solitaire_Simulation
 					lock (writeLock)
 					{
 						Console.Write("[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + ": ");
+					}
+
+					lock (iterationLock)
+					{
 						++iteration;
+					}
 
-						// Check the type of state once done
-						if (state.IsWinState)
+					// Check the type of state once done
+					if (state.IsWinState)
+					{
+						// If we won, add that
+						lock (h1WincounterLock)
 						{
-							// If we won, add that
 							++h1Wincounter;
+						}
 
+						lock (writeLock)
+						{
 							Console.Write("Win");
 						}
-						else
+					}
+					else
+					{
+						// Otherwise, show we lost
+						lock (writeLock)
 						{
-							// Otherwise, show we lost
 							Console.Write("Loss");
 						}
+					}
 
+					lock (writeLock)
+					{
 						Console.WriteLine(" after " + state.MovesMade + " moves");
 					}
 				});
 
-				lock (writeLock)
+				lock (winPercentageLock)
 				{
-					winPercentage[heuristicIndex] = (float) h1Wincounter / iterations * 100.0f;
+					winPercentage[heuristicIndex] = (float)h1Wincounter / iterations * 100.0f;
 				}
 			});
 
