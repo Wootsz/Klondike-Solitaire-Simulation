@@ -26,46 +26,66 @@ namespace Klondike_Solitaire_Simulation
 			//Console.WriteLine(startState.ToString(false));
 
 			//Console.WriteLine("Possible end states:");
-
-			int h1Wincounter = 0;
-			int iteration = 1;
-			int iterations = 1000;
-
 			Object writeLock = new Object();
 
-			Parallel.For(0, iterations, index =>
+			List<Heuristic> heuristics = new List<Heuristic>
 			{
-				State state = new State(); //startState;
+				new RandomHeuristic(),
+				new TableauHeuristic(),
+				new WindowsHeuristic()
+			};
 
-				// Make moves until you've reached an end state
-				List<State> moves;
-				while (!state.IsWinState && (moves = state.GetMoves()).Count > 0)
+			List<float> winPercentage = new List<float>(3);
+
+			Parallel.For(0, heuristics.Count, heuristicIndex =>
+			{
+				Heuristic heuristic = heuristics[heuristicIndex];
+
+				int h1Wincounter = 0;
+				int iteration = 1;
+				int iterations = 100;
+
+				Parallel.For(0, iterations, index =>
 				{
-					state = new WindowsHeuristic().GetMove(state, moves);
-				}
+					State state = new State(); //startState;
 
-				lock (writeLock)
-				{
-					Console.Write("Iteration " + iteration + "/" + iterations + ": ");
-					++iteration;
-
-					// Check the type of state once done
-					if (state.IsWinState)
+					// Make moves until you've reached an end state
+					List<State> moves;
+					while (!state.IsWinState && (moves = state.GetMoves()).Count > 0)
 					{
-						// If we won, add that
-						++h1Wincounter;
-
-						Console.Write("Win");
-					}
-					else
-					{
-						// Otherwise, show we lost
-						Console.Write("Loss");
+						state = heuristic.GetMove(state, moves);
 					}
 
-					Console.WriteLine(" after " + state.MovesMade + " moves");
-				}
+					lock (writeLock)
+					{
+						Console.Write("[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + ": ");
+						++iteration;
+
+						// Check the type of state once done
+						if (state.IsWinState)
+						{
+							// If we won, add that
+							++h1Wincounter;
+
+							Console.Write("Win");
+						}
+						else
+						{
+							// Otherwise, show we lost
+							Console.Write("Loss");
+						}
+
+						Console.WriteLine(" after " + state.MovesMade + " moves");
+					}
+				});
+
+				winPercentage[heuristicIndex] = (float) h1Wincounter / iterations * 100.0f;
 			});
+
+			for (int i = 0; i < heuristics.Count; ++i)
+			{
+				Console.WriteLine("[" + heuristics[i].GetType().Name + "] Win percentage: " + winPercentage[i] + " % ");
+			}
 
 			//Parallel.ForEach(Partitioner.Create(0, iterations), range =>
 			//{
@@ -143,7 +163,6 @@ namespace Klondike_Solitaire_Simulation
 			//             */
 			//});
 
-			Console.WriteLine((float)h1Wincounter / iterations * 100.0f + "%");
 			Console.ReadLine();
 		}
 	}
