@@ -30,12 +30,12 @@ namespace Klondike_Solitaire_Simulation
 
 			List<Heuristic> heuristics = new List<Heuristic>
 			{
-				new RandomHeuristic(),
-				new TableauHeuristic(),
+				//new RandomHeuristic(),
+				//new TableauHeuristic(),
 				new WindowsHeuristic()
 			};
 
-			List<float> winPercentage = new List<float>(3);
+			List<float> winPercentage = new List<float>(new float[heuristics.Count]);
 
 			Parallel.For(0, heuristics.Count, heuristicIndex =>
 			{
@@ -79,7 +79,10 @@ namespace Klondike_Solitaire_Simulation
 					}
 				});
 
-				winPercentage[heuristicIndex] = (float) h1Wincounter / iterations * 100.0f;
+				lock (writeLock)
+				{
+					winPercentage[heuristicIndex] = (float) h1Wincounter / iterations * 100.0f;
+				}
 			});
 
 			for (int i = 0; i < heuristics.Count; ++i)
