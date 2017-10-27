@@ -18,35 +18,35 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 				int foundationDif = newScore[foundIndex] - currentScore[foundIndex];
 
 				// Waste/stock to tableaux/foundations
-				//int score = Math.Abs(stockDif) * (5 * tableauxDif + 10 * foundationDif);
 				int score = 0;
 
 				//Tableaux move
 				if (tableauxDif == 0 && foundationDif == 0 && stockDif == 0)
 				{
-					score = 15;
+					score = 1;
 				}
 
 				// Tableaux to foundations
 				if (tableauxDif == -1 && foundationDif == 1)
 				{
-					score = 10;
+					score = 15;
 				}
 
-				// Foundations to tableaux
-				if (tableauxDif == 1 && foundationDif == -1)
+				// Stock to tableaux
+				if (tableauxDif == 1 && stockDif == -1)
 				{
-					score = 0;
+					score = 10;
 				}
 
 				// Turn over a tableau card
 				if (newScore[flipIndex] < currentScore[flipIndex] || tableauxDif == -1 && newScore[flipIndex] == currentScore[flipIndex])
 				{
-					score += 15;
+					score += 20;
 				}
 
 				if (score > highScore)
 				{
+                    score = highScore;
 					newState = new List<State> {move};
 				}
 				else if (score == highScore)
