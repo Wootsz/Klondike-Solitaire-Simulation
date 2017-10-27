@@ -242,82 +242,113 @@ namespace Klondike_Solitaire_Simulation
 		/// Makes a list of every possible future state, paired with its score, from the current state
 		/// </summary>
 		/// <returns>List of KeyValuePairs, where Key=score and Value=State</returns>
-		public List<State> GetMoves()
+		public List<State> GetMoves(bool countStock = false)
 		{
-			List<State> result = new List<State>();
-
-			// State where next Cards are moved to and from the waste
-			if (Stock.IsEmpty)
+			if (!countStock)
 			{
-				State wasteToStock = new State(this);
-				wasteToStock.Stock.Waste.Empty();
-				result.Add(wasteToStock);
+				// State where next Cards are moved to and from the waste
+				State temp = new State(this);
+				temp.Stock.Waste.Empty();
+				List<State> stockStates = new List<State>
+				{
+					new State(temp)
+				};
+				while (!temp.Stock.IsEmpty)
+				{
+					temp.Stock.MoveToWaste();
+					stockStates.Add(new State(temp));
+				}
+				stockStates.Add(new State(temp));
+
+				List<State> result = new List<State>();
+				foreach (State state in stockStates)
+				{
+					state.PreviousState = PreviousState;
+					state.CurrentStateNumber = CurrentStateNumber;
+					state.RefreshIdentifier();
+					result.AddRange(state.GetMoves(true));
+				}
+
+				return result;
 			}
 			else
 			{
-				State stockToWaste = new State(this);
-				stockToWaste.Stock.MoveToWaste();
-				result.Add(stockToWaste);
-			}
 
-			// All possible card movements
-			foreach (CardStack sourceStack in CardStacks)
-			{
-				if (!sourceStack.IsEmpty && sourceStack.CanRemoveCardFromTop())
+				List<State> result = new List<State>();
+
+				// State where next Cards are moved to and from the waste
+				//if (Stock.IsEmpty)
+				//{
+				//	State wasteToStock = new State(this);
+				//	wasteToStock.Stock.Waste.Empty();
+				//	result.Add(wasteToStock);
+				//}
+				//else
+				//{
+				//	State stockToWaste = new State(this);
+				//	stockToWaste.Stock.MoveToWaste();
+				//	result.Add(stockToWaste);
+				//}
+
+				// All possible card movements
+				foreach (CardStack sourceStack in CardStacks)
 				{
-					// Prevent nearly identical moves
-					bool foundFoundation = false;
-
-					foreach (CardStack targetStack in CardStacks)
+					if (!sourceStack.IsEmpty && sourceStack.CanRemoveCardFromTop())
 					{
-						// Prevent moving more than one card to or from a foundation
-						List<Card> availableCards = sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> {sourceStack.TopCard} : sourceStack.MovableCards;
-						foreach (Card movableCard in
-							from movableCard in availableCards
-							let isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty
-							where !isUselessMove && targetStack.CanPlaceCardOnTop(movableCard)
-							select movableCard)
+						// Prevent nearly identical moves
+						bool foundFoundation = false;
+
+						foreach (CardStack targetStack in CardStacks)
 						{
-							// Prevent nearly identical moves
-							if (targetStack is FoundationCardStack)
+							// Prevent moving more than one card to or from a foundation
+							List<Card> availableCards = sourceStack is FoundationCardStack || targetStack is FoundationCardStack ? new List<Card> {sourceStack.TopCard} : sourceStack.MovableCards;
+							foreach (Card movableCard in
+								from movableCard in availableCards
+								let isUselessMove = sourceStack == targetStack || movableCard == sourceStack.BottomCard && targetStack.IsEmpty
+								where !isUselessMove && targetStack.CanPlaceCardOnTop(movableCard)
+								select movableCard)
 							{
-								if (foundFoundation)
+								// Prevent nearly identical moves
+								if (targetStack is FoundationCardStack)
 								{
-									continue;
+									if (foundFoundation)
+									{
+										continue;
+									}
+									else
+									{
+										foundFoundation = true;
+									}
 								}
-								else
-								{
-									foundFoundation = true;
-								}
+
+								// Clone state
+								State newState = new State(this);
+
+								Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
+
+								// Make move in new state
+								newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
+								newState.moveAbleCard = newStateMovableCard;
+
+								// Add new state
+								result.Add(newState);
 							}
-
-							// Clone state
-							State newState = new State(this);
-
-							Card newStateMovableCard = newState.CardStacks[CardStacks.IndexOf(sourceStack)].Cards[sourceStack.Cards.IndexOf(movableCard)];
-
-							// Make move in new state
-							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
-                            newState.moveAbleCard = newStateMovableCard;
-
-							// Add new state
-							result.Add(newState);
 						}
 					}
 				}
+
+				// Set properties
+				for (int resultIndex = 0; resultIndex < result.Count; ++resultIndex)
+				{
+					State state = result[resultIndex];
+
+					state.PreviousState = this;
+					state.CurrentStateNumber = resultIndex + 1;
+					state.RefreshIdentifier();
+				}
+
+				return result.Where(o => !o.IsRepeatedState).ToList();
 			}
-
-			// Set properties
-			for (int resultIndex = 0; resultIndex < result.Count; ++ resultIndex)
-			{
-				State state = result[resultIndex];
-
-				state.PreviousState = this;
-				state.CurrentStateNumber = resultIndex + 1;
-				state.RefreshIdentifier();
-			}
-
-			return result.Where(o => !o.IsRepeatedState).ToList();
 		}
 
         public Card moveAbleCard = new Card(Suit.Clubs, Rank.Ace);
@@ -330,7 +361,10 @@ namespace Klondike_Solitaire_Simulation
 			Identifier = "";
 			foreach (CardStack stack in CardStacks)
 			{
-				Identifier += stack + "\n";
+				if (!(stack is WasteCardStack || stack is StockCardStack))
+				{
+					Identifier += stack + "\n";
+				}
 			}
 
 			return this;

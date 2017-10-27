@@ -32,13 +32,13 @@ namespace Klondike_Solitaire_Simulation
 			Object h1WincounterLock = new Object();
 			Object winPercentageLock = new Object();
 
-			Object fileLock = new Object();
-
 			List<Heuristic> heuristics = new List<Heuristic>
 			{
 				//new RandomHeuristic(),
 				//new TableauHeuristic(),
-				new WindowsHeuristic()
+				//new WindowsHeuristic(),
+				new HighestRankHeuristic(),
+				//new PlaceHoldersHeuristic()
 			};
 
 			List<float> winPercentage = new List<float>(new float[heuristics.Count]);
@@ -50,7 +50,7 @@ namespace Klondike_Solitaire_Simulation
 
 				int h1Wincounter = 0;
 				int iteration = 1;
-				int iterations = 500;
+				int iterations = 100;
 
 				Parallel.For(0, iterations, index =>
 				//for(int index = 0; index < iterations; ++index)
@@ -68,7 +68,7 @@ namespace Klondike_Solitaire_Simulation
 						state = heuristic.GetMove(state, moves);
 					}
 
-					string output = "[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + ": ";
+					string output = "[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + " (" + index + "): ";
 
 					lock (iterationLock)
 					{
@@ -98,17 +98,14 @@ namespace Klondike_Solitaire_Simulation
 					{
 						Console.WriteLine(output);
 					}
-					
-					lock (fileLock)
-					{
-						//StreamWriter writer = new StreamWriter();
-						//string stateText = state.ToString(true, false);
-						//writer.WriteLine(stateText);
-						//writer.Flush();
-						//writer.Close();
 
-						System.IO.File.WriteAllLines(@"C:\Users\qub1\Desktop\Output\Game" + index + ".txt", state.ToString(true, false).Split('\n'));
-					}
+					//StreamWriter writer = new StreamWriter();
+					//string stateText = state.ToString(true, false);
+					//writer.WriteLine(stateText);
+					//writer.Flush();
+					//writer.Close();
+
+					System.IO.File.WriteAllLines(@"D:\Output\" + index + ".txt", state.ToString(true, false).Split('\n'));
 				});
 
 				lock (winPercentageLock)
