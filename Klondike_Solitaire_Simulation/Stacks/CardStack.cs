@@ -30,8 +30,8 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 			for (int cardIndex = 0; cardIndex < original.CardCount; ++cardIndex)
 			{
-				//Cards.Add(new Card(original.Cards[cardIndex]));
-				Cards.Add(original.Cards[cardIndex]);
+				Cards.Add(new Card(original.Cards[cardIndex]));
+				//Cards.Add(original.Cards[cardIndex]);
 			}
 
 			Capacity = original.Capacity;

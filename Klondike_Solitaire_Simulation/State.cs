@@ -86,11 +86,11 @@ namespace Klondike_Solitaire_Simulation
 			Stock.FlipAllCards();
 
 			// Set up card stacks
-			CardStacks = new List<CardStack>
-			{
-				Stock,
-				Stock.Waste
-			}.Concat(Foundations).Concat(Tableaus).ToList();
+			CardStacks = new List<CardStack>();
+			CardStacks.Add(Stock);
+			CardStacks.Add(Stock.Waste);
+			CardStacks.AddRange(Foundations);
+			CardStacks.AddRange(Tableaus);
 		}
 
 		/// <summary>
@@ -131,21 +131,20 @@ namespace Klondike_Solitaire_Simulation
 		{
 			get
 			{
-				if (PreviousState == null)
+				List<int> result = new List<int>
 				{
-					return new List<int>
-					{
-						CurrentStateNumber
-					};
-				}
-				else
+					CurrentStateNumber
+				};
+
+				State previousState = this;
+				while ((previousState = previousState.PreviousState) != null)
 				{
-					List<int> result = PreviousState.TotalStateNumber;
-
-					result.Add(CurrentStateNumber);
-
-					return result;
+					result.Add(previousState.CurrentStateNumber);
 				}
+
+				result.Reverse();
+
+				return result;
 			}
 		}
 
@@ -188,11 +187,22 @@ namespace Klondike_Solitaire_Simulation
 		/// Gets card string representation of the current state.
 		/// </summary>
 		/// <returns>The current state as card string.</returns>
-		public override string ToString() => ToString(false);
+		public override string ToString() => ToString(false, false);
 
-		public string ToString(bool printMoves, int recursionCount = 0, string indent = "|")
+		public string ToString(bool printPrevious, bool printMoves, int recursionCount = 0, string indent = "|")
 		{
-			string result = indent + "- State #" + String.Join(".", TotalStateNumber);
+			string result = "";
+
+			if (printPrevious)
+			{
+				State currentState = this;
+				while ((currentState = currentState.PreviousState) != null)
+				{
+					result = currentState.ToString(false, false) + result;
+				}
+			}
+
+			result += "\n" + indent + "- State #" + String.Join(".", TotalStateNumber);
 
 			result += "\n" + indent + "  Is end state: " + IsEndState;
 
@@ -221,7 +231,7 @@ namespace Klondike_Solitaire_Simulation
 				{
 					result += "\n" + indent;
 
-					result += "\n" + currentState.ToString(true, recursionCount - 1, indent + "   |");
+					result += "\n" + currentState.ToString(false, true, recursionCount - 1, indent + "   |");
 				}
 			}
 
