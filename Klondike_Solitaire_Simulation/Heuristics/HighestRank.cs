@@ -6,24 +6,21 @@ using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-    class WoutersHeuristic : Heuristic
+    class HighestRank : Heuristic
     {
         public override State GetMove(State currentState, List<State> moves)
         {
-            int[] scores = GetScore(currentState);
+            Rank highestRank = Rank.Ace;
             List<State> bestMoves = new List<State>();
-            int bestScore = 52;
 
             foreach (State move in moves)
             {
-                int[] move_scores = GetScore(move);
-
-                if(move_scores[flipIndex] < bestScore)
+                if (move.moveAbleCard.Rank > highestRank)
                 {
-                    bestScore = move_scores[flipIndex];
+                    highestRank = move.moveAbleCard.Rank;
                     bestMoves = new List<State>() { move };
                 }
-                else if(move_scores[flipIndex] == bestScore)
+                else if (move.moveAbleCard.Rank == highestRank)
                 {
                     bestMoves.Add(move);
                 }

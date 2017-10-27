@@ -298,6 +298,7 @@ namespace Klondike_Solitaire_Simulation
 
 							// Make move in new state
 							newState.CardStacks[CardStacks.IndexOf(sourceStack)].MoveCardsFromTop(newState.CardStacks[CardStacks.IndexOf(targetStack)], newStateMovableCard, false, false);
+                            newState.moveAbleCard = newStateMovableCard;
 
 							// Add new state
 							result.Add(newState);
@@ -318,6 +319,8 @@ namespace Klondike_Solitaire_Simulation
 
 			return result.Where(o => !o.IsRepeatedState).ToList();
 		}
+
+        public Card moveAbleCard = new Card(Suit.Clubs, Rank.Ace);
 
 		/// <summary>
 		/// Refreshes this state's identifier.
