@@ -1,61 +1,90 @@
-﻿using System.Collections.Generic;
+﻿using Klondike_Solitaire_Simulation.Stacks;
+using System.Collections.Generic;
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-	class TableauHeuristic : Heuristic
-	{
-		public override State GetMove(State currentState, List<State> moves)
-		{
-			int[] currentScore = GetScore(currentState);
-			int highScore = 0;
-			List<State> newState = new List<State>();
+    class TableauHeuristic : Heuristic
+    {
 
-			foreach (State move in moves)
-			{
-				int[] newScore = GetScore(move);
-				int stockDif = newScore[stowasIndex] - currentScore[stowasIndex];
-				int tableauxDif = newScore[tablIndex] - currentScore[tablIndex];
-				int foundationDif = newScore[foundIndex] - currentScore[foundIndex];
+        public override State GetMove(State currentState, List<State> moves)
+        {
+            int highScore = 0;
+            List<State> newState = new List<State>();
+            int[] currentScore = GetScore(currentState);
+            int turnTableau = 90;
+            int stockToTableau = 80;
+            int tableauMove = 70;
+            int tableauToFoundations = 60;
 
-				// Waste/stock to tableaux/foundations
-				int score = 0;
+            foreach (State move in moves)
+            {
+                //Foundation score
+                int foundationScore = 0;
+                foreach (CardStack foundation in move.Foundations)
+                {
+                    foundationScore += foundation.CardCount;
+                }
 
-				//Tableaux move
-				if (tableauxDif == 0 && foundationDif == 0 && stockDif == 0)
-				{
-					score = 1;
-				}
+                if (foundationScore > 10)
+                {
+                    tableauMove = 60;
+                    tableauToFoundations = 70;
+                }
 
-				// Tableaux to foundations
-				if (tableauxDif == -1 && foundationDif == 1)
-				{
-					score = 15;
-				}
+                int[] newScore = GetScore(move);
+                int stockDif = newScore[stowasIndex] - currentScore[stowasIndex];
+                int tableauxDif = newScore[tablIndex] - currentScore[tablIndex];
+                int foundationDif = newScore[foundIndex] - currentScore[foundIndex];
 
-				// Stock to tableaux
-				if (tableauxDif == 1 && stockDif == -1)
-				{
-					score = 10;
-				}
+                //If you can move an Ace or Two always do it
+                if (highScore <= 100 && ((move.moveAbleCard.Rank == Rank.Ace || move.moveAbleCard.Rank == Rank.Two) && ((highScore <= stockToTableau && (tableauxDif == 1 && stockDif == -1)) || (highScore <= tableauToFoundations && (tableauxDif == -1 && foundationDif == 1)))))
+                {
+                    handleNextStateScore(move, 100, highScore, newState);
+                    highScore = 100;
+                }
 
-				// Turn over a tableau card
-				if (newScore[flipIndex] < currentScore[flipIndex] || tableauxDif == -1 && newScore[flipIndex] == currentScore[flipIndex])
-				{
-					score += 20;
-				}
+                // Turn over a tableau card
+                if (highScore <= turnTableau && (newScore[flipIndex] < currentScore[flipIndex] || tableauxDif == -1 && newScore[flipIndex] == currentScore[flipIndex]))
+                {
+                    handleNextStateScore(move, turnTableau, highScore, newState);
+                    highScore = turnTableau;
+                }
 
-				if (score > highScore)
-				{
-                    score = highScore;
-					newState = new List<State> {move};
-				}
-				else if (score == highScore)
-				{
-					newState.Add(move);
-				}
-			}
+                // Stock to tableaux
+                if (highScore <= stockToTableau && (tableauxDif == 1 && stockDif == -1))
+                {
+                    handleNextStateScore(move, stockToTableau, highScore, newState);
+                    highScore = stockToTableau;
+                }
 
-			return newState[Utility.Random.Next(newState.Count)];
-		}
-	}
+                //Tableaux move
+                if (highScore <= tableauMove && (tableauxDif == 0 && foundationDif == 0 && stockDif == 0))
+                {
+                    handleNextStateScore(move, tableauMove, highScore, newState);
+                    highScore = tableauMove;
+                }
+
+                // Tableaux to foundations
+                if (highScore <= tableauToFoundations && (tableauxDif == -1 && foundationDif == 1))
+                {
+                    handleNextStateScore(move, tableauToFoundations, highScore, newState);
+                    highScore = tableauToFoundations;
+                }
+
+
+            }
+            return newState[Utility.Random.Next(newState.Count)];
+        }
+
+        private void handleNextStateScore(State state, int score, int highScore, List<State> newState)
+        {
+            if (highScore < score)
+            {
+                newState = new List<State>() { state };
+            }else if(highScore == score)
+            {
+                newState.Add(state);
+            }
+        }
+    }
 }
