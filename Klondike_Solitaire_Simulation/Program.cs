@@ -32,13 +32,14 @@ namespace Klondike_Solitaire_Simulation
 			Object h1WincounterLock = new Object();
 			Object winPercentageLock = new Object();
 
-			List<Heuristic> heuristics = new List<Heuristic>
-			{
+            List<Heuristic> heuristics = new List<Heuristic>
+            {
 				//new RandomHeuristic(),
 				//new TableauHeuristic(),
 				//new WindowsHeuristic(),
-				new HighestRankHeuristic(),
-				//new PlaceHoldersHeuristic()
+				//new HighestRankHeuristic(),
+				new PlaceHoldersHeuristic(),
+                //new ChanceHeuristic(),
 			};
 
 			List<float> winPercentage = new List<float>(new float[heuristics.Count]);
@@ -105,7 +106,7 @@ namespace Klondike_Solitaire_Simulation
 					//writer.Flush();
 					//writer.Close();
 
-					System.IO.File.WriteAllLines(@"D:\Output\" + index + ".txt", state.ToString(true, false).Split('\n'));
+					System.IO.File.WriteAllLines(@"C:\Users\Wouter\Desktop\Output\" + index + ".txt", state.ToString(true, false).Split('\n'));
 				});
 
 				lock (winPercentageLock)
