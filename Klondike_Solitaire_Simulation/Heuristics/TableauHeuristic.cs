@@ -5,11 +5,11 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 {
     class TableauHeuristic : Heuristic
     {
-        int highScore = 0;
-        List<State> newState = new List<State>();
 
         public override State GetMove(State currentState, List<State> moves)
         {
+            int highScore = 0;
+            List<State> newState = new List<State>();
             int[] currentScore = GetScore(currentState);
             int turnTableau = 90;
             int stockToTableau = 80;
@@ -37,37 +37,37 @@ namespace Klondike_Solitaire_Simulation.Heuristics
                 int foundationDif = newScore[foundIndex] - currentScore[foundIndex];
 
                 //If you can move an Ace or Two always do it
-                if (highScore <= 100 && (move.moveAbleCard.Rank == Rank.Ace || move.moveAbleCard.Rank == Rank.Two))
+                if (highScore <= 100 && ((move.moveAbleCard.Rank == Rank.Ace || move.moveAbleCard.Rank == Rank.Two) && ((highScore <= stockToTableau && (tableauxDif == 1 && stockDif == -1)) || (highScore <= tableauToFoundations && (tableauxDif == -1 && foundationDif == 1)))))
                 {
-                    handleNextStateScore(move, 100);
+                    handleNextStateScore(move, 100, highScore, newState);
                     highScore = 100;
                 }
 
                 // Turn over a tableau card
                 if (highScore <= turnTableau && (newScore[flipIndex] < currentScore[flipIndex] || tableauxDif == -1 && newScore[flipIndex] == currentScore[flipIndex]))
                 {
-                    handleNextStateScore(move, turnTableau);
+                    handleNextStateScore(move, turnTableau, highScore, newState);
                     highScore = turnTableau;
                 }
 
                 // Stock to tableaux
                 if (highScore <= stockToTableau && (tableauxDif == 1 && stockDif == -1))
                 {
-                    handleNextStateScore(move, stockToTableau);
+                    handleNextStateScore(move, stockToTableau, highScore, newState);
                     highScore = stockToTableau;
                 }
 
                 //Tableaux move
                 if (highScore <= tableauMove && (tableauxDif == 0 && foundationDif == 0 && stockDif == 0))
                 {
-                    handleNextStateScore(move, tableauMove);
+                    handleNextStateScore(move, tableauMove, highScore, newState);
                     highScore = tableauMove;
                 }
 
                 // Tableaux to foundations
                 if (highScore <= tableauToFoundations && (tableauxDif == -1 && foundationDif == 1))
                 {
-                    handleNextStateScore(move, tableauToFoundations);
+                    handleNextStateScore(move, tableauToFoundations, highScore, newState);
                     highScore = tableauToFoundations;
                 }
 
@@ -76,11 +76,14 @@ namespace Klondike_Solitaire_Simulation.Heuristics
             return newState[Utility.Random.Next(newState.Count)];
         }
 
-        public void handleNextStateScore(State state, int score)
+        private void handleNextStateScore(State state, int score, int highScore, List<State> newState)
         {
             if (highScore < score)
             {
                 newState = new List<State>() { state };
+            }else if(highScore == score)
+            {
+                newState.Add(state);
             }
         }
     }
