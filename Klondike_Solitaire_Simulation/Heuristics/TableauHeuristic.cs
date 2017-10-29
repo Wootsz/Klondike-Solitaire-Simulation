@@ -10,6 +10,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
         {
             int highScore = 0;
             List<State> newState = new List<State>();
+            Heuristic WH = new WindowsHeuristic();
             int[] currentScore = GetScore(currentState);
             int turnTableau = 90;
             int stockToTableau = 80;
@@ -58,7 +59,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
                 }
 
                 //Tableaux move
-                if (highScore <= tableauMove && (tableauxDif == 0 && foundationDif == 0 && stockDif == 0))
+                if (highScore <= tableauMove && (tableauxDif == 0 && foundationDif == 0 && stockDif == 0) && checkDownedTableauCards(move))
                 {
                     handleNextStateScore(move, tableauMove, highScore, newState);
                     highScore = tableauMove;
@@ -73,9 +74,16 @@ namespace Klondike_Solitaire_Simulation.Heuristics
 
 
             }
-            return newState[Utility.Random.Next(newState.Count)];
+
+            //Return state 
+            if (newState.Count > 0)
+                return newState[Utility.Random.Next(newState.Count)];
+            else
+                //Return windowsHeuristic stat if none of the above apply
+                return WH.GetMove(currentState, moves);
         }
 
+        //Handle new state list
         private void handleNextStateScore(State state, int score, int highScore, List<State> newState)
         {
             if (highScore < score)
@@ -85,6 +93,19 @@ namespace Klondike_Solitaire_Simulation.Heuristics
             {
                 newState.Add(state);
             }
+        }
+
+        //Check if a certain moves makes a flipped card get bare
+        private bool checkDownedTableauCards(State state)
+        {
+            foreach(CardStack tableau in state.Tableaus)
+            {
+                if(tableau.CardCount > 0)
+                    if (tableau.TopCard.Flipped)
+                        return true;
+            }
+
+            return false;
         }
     }
 }
