@@ -46,6 +46,7 @@
     <Compile Include="Heuristics\Heuristic.cs" />
     <Compile Include="Heuristics\ChanceHeuristic.cs" />
     <Compile Include="Heuristics\HighestRankHeuristic.cs" />
+    <Compile Include="Heuristics\PlaceHolderHeuristic2.cs" />
     <Compile Include="Heuristics\PlaceHolderHeuristic.cs" />
     <Compile Include="Heuristics\RandomHeuristic.cs" />
     <Compile Include="Heuristics\TableauHeuristic.cs" />
