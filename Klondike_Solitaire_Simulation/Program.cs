@@ -35,20 +35,25 @@ namespace Klondike_Solitaire_Simulation
             List<Heuristic> heuristics = new List<Heuristic>
             {
                 //new ChanceHeuristic(),
-                //new HighestRankHeuristic(),
+                new HighestRankHeuristic(),
                 //new PlaceHoldersHeuristic(),
                 //new PlaceHolderHeuristic2(),
-                //new RandomHeuristic(),
-                //new TableauHeuristic(),
-                //new WindowsHeuristic(),
+                new RandomHeuristic(),
+                new TableauHeuristic(),
+                new WindowsHeuristic(),
                 new WouterHeuristic(),
             };
 
             int gamesNotLost = 0;
             int h1Wincounter = 0;
             int iteration = 1;
-            int iterations = 100;
+            int iterations = 1000;
             List<float> winPercentage = new List<float>(new float[heuristics.Count]);
+            List<long> averageMoves = new List<long>(new long[heuristics.Count]);
+            List<long> averageWinMoves = new List<long>(new long[heuristics.Count]);
+            for (int h = 0; h < heuristics.Count; h++) { 
+                averageMoves[h] = 0; averageWinMoves[h] = 0; }
+
 
             Parallel.For(0, iterations, index =>
             //for(int index = 0; index < iterations; ++index)
@@ -90,6 +95,7 @@ namespace Klondike_Solitaire_Simulation
                         }
 
                         output += "Win";
+                        averageWinMoves[heuristicIndex] += state.MovesMade;
                     }
                     else
                     {
@@ -98,6 +104,7 @@ namespace Klondike_Solitaire_Simulation
                     }
 
                     output += " after " + state.MovesMade + " moves\n";
+                    averageMoves[heuristicIndex] += state.MovesMade;
 
                     //lock (writeLock)
                     //{
@@ -148,6 +155,7 @@ namespace Klondike_Solitaire_Simulation
             for (int i = 0; i < heuristics.Count; ++i)
             {
                 Console.WriteLine("[" + heuristics[i].GetType().Name + "] Win percentage: " + (float)(winPercentage[i]/gamesNotLost)*100 + " % ");
+                Console.WriteLine("  Average moves: " + averageMoves[i]/iterations + ".  Average moves when won: " + averageWinMoves[i]/gamesNotLost + ".");
             }
             Console.WriteLine(gamesNotLost + " out of " + iterations + " games won");
 
