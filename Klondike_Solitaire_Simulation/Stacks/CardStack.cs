@@ -57,10 +57,15 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		/// </summary>
 		public List<Card> FlippedCards => Cards.Where(card => card.Flipped).ToList();
 
-		/// <summary>
-		/// All normal cards, from lowest to highest.
+        /// <summary>
+		/// All unflipped cards, from lowest to highest.
 		/// </summary>
-		public List<Card> NormalCards => Cards.Where(card => !card.Flipped).ToList();
+		public List<Card> UnflippedCards => Cards.Where(card => !card.Flipped).ToList();
+
+        /// <summary>
+        /// All normal cards, from lowest to highest.
+        /// </summary>
+        public List<Card> NormalCards => Cards.Where(card => !card.Flipped).ToList();
 
 		/// <summary>
 		/// All cards that can be moved.

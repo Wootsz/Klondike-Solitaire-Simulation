@@ -34,13 +34,14 @@ namespace Klondike_Solitaire_Simulation
 
             List<Heuristic> heuristics = new List<Heuristic>
             {
-                new ChanceHeuristic(),
+                //new ChanceHeuristic(),
                 //new HighestRankHeuristic(),
-                new PlaceHoldersHeuristic(),
+                //new PlaceHoldersHeuristic(),
                 //new PlaceHolderHeuristic2(),
-                new RandomHeuristic(),
-                new TableauHeuristic(),
-                new WindowsHeuristic()
+                //new RandomHeuristic(),
+                //new TableauHeuristic(),
+                //new WindowsHeuristic(),
+                new WouterHeuristic(),
             };
 
             int gamesNotLost = 0;
@@ -76,8 +77,6 @@ namespace Klondike_Solitaire_Simulation
                     }
 
                     output += "[" + heuristic.GetType().Name + "] Iteration " + iteration + "/" + iterations + " (" + index + "): ";
-
-                    
 
                     wonGames.Add(state.IsWinState);
 
@@ -118,7 +117,7 @@ namespace Klondike_Solitaire_Simulation
                     //{
                     //    winPercentage[heuristicIndex] = (float)h1Wincounter / iterations * 100.0f;
                     //}
-                }
+                }//);
 
                 lock (iterationLock)
                 {
@@ -150,6 +149,7 @@ namespace Klondike_Solitaire_Simulation
             {
                 Console.WriteLine("[" + heuristics[i].GetType().Name + "] Win percentage: " + (float)(winPercentage[i]/gamesNotLost)*100 + " % ");
             }
+            Console.WriteLine(gamesNotLost + " out of " + iterations + " games won");
 
             //Parallel.ForEach(Partitioner.Create(0, iterations), range =>
             //{

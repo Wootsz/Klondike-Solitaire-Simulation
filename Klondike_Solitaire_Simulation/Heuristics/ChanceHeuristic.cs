@@ -16,7 +16,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
             Dictionary<int, List<State>> states = new Dictionary<int, List<State>>();
 
             Rank lowestFoundationRank = Rank.King;
-            for (int i = 1; i < 5; i++)
+            for (int i = 2; i < 5; i++)
             {
                 if (currentState.CardStacks[i].IsEmpty)
                 {

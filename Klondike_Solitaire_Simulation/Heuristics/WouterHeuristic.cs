@@ -6,13 +6,25 @@ using System.Threading.Tasks;
 
 namespace Klondike_Solitaire_Simulation.Heuristics
 {
-    class PlaceHolderHeuristic2 : Heuristic
+    class WouterHeuristic : Heuristic
     {
         public override State GetMove(State currentState, List<State> moves)
         {
             int[] scores1 = GetScore(currentState);
             int highScore = -52;
             List<State> bestStates = new List<State>();
+
+            Rank lowestFoundationRank = Rank.King;
+            for (int i = 2; i < 5; i++)
+            {
+                if (currentState.CardStacks[i].IsEmpty)
+                {
+                    lowestFoundationRank = Rank.Ace;
+                    break;
+                }
+                else if (currentState.CardStacks[i].TopCard.Rank < lowestFoundationRank)
+                    lowestFoundationRank = currentState.CardStacks[i].TopCard.Rank;
+            }
 
             foreach (State move in moves)
             {
@@ -21,12 +33,33 @@ namespace Klondike_Solitaire_Simulation.Heuristics
                 int tableauxDif = scores[tablIndex] - scores1[tablIndex];
                 int foundationDif = scores[foundIndex] - scores1[foundIndex];
 
+                // Always move an the lowest card to the foundation immediately
+                if (foundationDif == 1 && move.moveAbleCard.Rank == lowestFoundationRank)
+                    return move;
+
                 int score = 0;
 
-                if (stockDif == -1 && tableauxDif == 1 && ExistsFollowUpCard(move))
-                {
-                    score = 30;
-                }
+                if (stockDif == -1 && tableauxDif == 1)
+                    if (ExistsFollowUpCard(move))
+                        score = 10;
+                    else score = -1;
+
+                if (tableauxDif == -1 && foundationDif == 1)
+                    score = 20;
+
+                if (stockDif == -1 && foundationDif == 1)
+                    if (move.moveAbleCard.Rank <= lowestFoundationRank + 2)
+                        score = 20;
+                    else score = -1;
+
+                if (foundationDif == -1 && tableauxDif == 1)
+                    score = -2;
+
+                if (tableauxDif == 0 && stockDif == 0 && foundationDif == 0)
+                    score = -1;
+
+                if (scores[flipIndex] < scores1[flipIndex] || tableauxDif == -1 && scores[flipIndex] == scores1[flipIndex])
+                    score += 5;
 
                 if (score > highScore)
                 {

@@ -51,6 +51,7 @@
     <Compile Include="Heuristics\RandomHeuristic.cs" />
     <Compile Include="Heuristics\TableauHeuristic.cs" />
     <Compile Include="Heuristics\WindowsHeuristic.cs" />
+    <Compile Include="Heuristics\WouterHeuristic.cs" />
     <Compile Include="Stacks\CardStack.cs" />
     <Compile Include="Stacks\FoundationCardStack.cs" />
     <Compile Include="Program.cs" />
