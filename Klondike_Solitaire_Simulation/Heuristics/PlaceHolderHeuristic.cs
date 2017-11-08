@@ -11,14 +11,19 @@ namespace Klondike_Solitaire_Simulation.Heuristics
         public override State GetMove(State currentState, List<State> moves)
         {
             int[] currentScore = GetScore(currentState);
-            int highScore = 0;
+            int highScore = -52;
             List<State> newState = new List<State>();
 
-            Rank highestTotalFoundationRank = Rank.Ace;
-            for (int i = 1; i < 5; i++)
+            Rank lowestFoundationRank = Rank.King;
+            for (int i = 2; i < 5; i++)
             {
-                if (currentState.CardStacks[i].TopCard.Rank < highestTotalFoundationRank)
-                    highestTotalFoundationRank = currentState.CardStacks[i].TopCard.Rank;
+                if (currentState.CardStacks[i].IsEmpty)
+                {
+                    lowestFoundationRank = Rank.Ace;
+                    break;
+                }
+                else if (currentState.CardStacks[i].TopCard.Rank < lowestFoundationRank)
+                    lowestFoundationRank = currentState.CardStacks[i].TopCard.Rank;
             }
 
             foreach (State move in moves)
@@ -36,7 +41,7 @@ namespace Klondike_Solitaire_Simulation.Heuristics
                 {
                     if (move.moveAbleCard.Rank >= (Rank)2)
                     {
-                        if (highestTotalFoundationRank > (Rank)(move.moveAbleCard.Rank - 2))
+                        if (lowestFoundationRank > (Rank)(move.moveAbleCard.Rank - 2))
                         {
                             score = -10;
                         }

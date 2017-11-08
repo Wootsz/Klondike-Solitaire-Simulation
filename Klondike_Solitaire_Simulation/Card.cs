@@ -118,5 +118,12 @@ namespace Klondike_Solitaire_Simulation
 
 			return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
 		}
-	}
+
+        public bool OppositeColor(Suit otherSuit)
+        {
+            return ((Suit == Diamonds || Suit == Hearts) && (otherSuit == Spades || otherSuit == Clubs)) || 
+                ((Suit == Clubs || Suit == Spades) && (otherSuit == Diamonds || otherSuit == Hearts));
+        }
+
+    }
 }
