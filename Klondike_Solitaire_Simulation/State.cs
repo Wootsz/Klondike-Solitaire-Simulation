@@ -351,7 +351,7 @@ namespace Klondike_Solitaire_Simulation
 			}
 		}
 
-        public Card moveAbleCard = new Card(Suit.Clubs, Rank.Ace);
+		public Card moveAbleCard = new Card(Suit.Clubs, Rank.Ace);
 
 		/// <summary>
 		/// Refreshes this state's identifier.
