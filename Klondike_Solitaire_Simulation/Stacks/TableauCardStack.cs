@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Klondike_Solitaire_Simulation.Stacks
+﻿namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class TableauCardStack : CardStack
 	{
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new tableau stack.
 		/// </summary>
@@ -15,14 +10,16 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the tableau stack.
 		/// </summary>
 		/// <param name="original">The original tablue stack.</param>
-		public TableauCardStack(TableauCardStack original) : base(original)
+		public TableauCardStack(CardStack original) : base(original)
 		{
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Checks if a move is possible given a card.
 		/// </summary>
@@ -31,12 +28,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public override bool CanPlaceCardOnTop(Card card)
 		{
 			// First check if the tableau is empty
-			if (IsEmpty())
+			if (IsEmpty)
 			{
 				// If it's empty, the next card needs to be a king
 				return card.Rank == Rank.King;
 			}
-			else if (IsFull())
+			else if (IsFull)
 			{
 				return false;
 			}
@@ -51,10 +48,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			}
 		}
 
-		public override CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true) {
+		public override CardStack MoveCardsFromTop(CardStack otherStack, int amount, bool flip = false, bool reverse = true)
+		{
 			CardStack result = base.MoveCardsFromTop(otherStack, amount, flip, reverse);
 
-			if (!IsEmpty() && TopCard.Flipped) {
+			if (!IsEmpty && TopCard.Flipped)
+			{
 				TopCard.Flip();
 			}
 

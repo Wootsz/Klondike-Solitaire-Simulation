@@ -1,43 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class WasteCardStack : CardStack
 	{
-		public override List<Card> MovableCards => new List<Card>() {
-			TopCard
-		};
-
 		/// <summary>
 		/// The stock stack.
 		/// </summary>
 		public StockCardStack Stock;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new waste stack.
 		/// </summary>
 		/// <param name="stock">The stock stack.</param>
-		public WasteCardStack(StockCardStack stock)
-		{
-			Stock = stock;
-		}
+		public WasteCardStack(StockCardStack stock) => Stock = stock;
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the waste stack.
 		/// </summary>
 		/// <param name="original">The original waste stack.</param>
-		public WasteCardStack(WasteCardStack original) : base(original)
+		public WasteCardStack(CardStack original) : base(original)
 		{
 		}
 
-		public override bool CanPlaceCardOnTop(Card card)
+		public override List<Card> MovableCards => new List<Card>
 		{
-			return false;
-		}
+			TopCard
+		};
+
+		public override bool CanPlaceCardOnTop(Card card) => false;
 
 		/// <summary>
 		/// Empties the waste back into the stock.

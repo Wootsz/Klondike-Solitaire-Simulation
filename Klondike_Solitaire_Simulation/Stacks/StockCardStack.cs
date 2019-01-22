@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Klondike_Solitaire_Simulation.Stacks
+﻿namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class StockCardStack : CardStack
 	{
-		/// <summary>
-		/// The waste stack.
-		/// </summary>
-		public WasteCardStack Waste;
-
 		/// <summary>
 		/// The amount of Cards to move to the waste each time.
 		/// </summary>
 		public int MoveAmount;
 
+		/// <summary>
+		/// The waste stack.
+		/// </summary>
+		public WasteCardStack Waste;
+
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new stock stack.
 		/// </summary>
@@ -29,14 +23,17 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			MoveAmount = moveAmount;
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the stock stack.
 		/// </summary>
 		/// <param name="original">The original stock stack.</param>
 		public StockCardStack(StockCardStack original) : base(original)
 		{
-			Waste = new WasteCardStack(original.Waste);
-			Waste.Stock = this;
+			Waste = new WasteCardStack(original.Waste)
+			{
+				Stock = this
+			};
 			MoveAmount = original.MoveAmount;
 		}
 
@@ -50,14 +47,8 @@ namespace Klondike_Solitaire_Simulation.Stacks
 			return this;
 		}
 
-		public override bool CanPlaceCardOnTop(Card card)
-		{
-			return false;
-		}
+		public override bool CanPlaceCardOnTop(Card card) => false;
 
-		public override bool CanRemoveCardFromTop()
-		{
-			return false;
-		}
+		public override bool CanRemoveCardFromTop() => false;
 	}
 }

@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Klondike_Solitaire_Simulation.Stacks;
 using static Klondike_Solitaire_Simulation.Suit;
-using static Klondike_Solitaire_Simulation.Rank;
 
 namespace Klondike_Solitaire_Simulation
 {
@@ -42,17 +36,10 @@ namespace Klondike_Solitaire_Simulation
 
 	public class Card
 	{
-		public const bool UseShorthand = true;
-
 		/// <summary>
-		/// The suit of the card.
+		/// Whether the card is flipped (invisible).
 		/// </summary>
-		public Suit Suit;
-
-		/// <summary>
-		/// The color of the current suit.
-		/// </summary>
-		public Color Color => Suit == Spades || Suit == Clubs ? Color.Black : Color.Red;
+		public bool Flipped;
 
 		/// <summary>
 		/// The rank of the card.
@@ -60,9 +47,9 @@ namespace Klondike_Solitaire_Simulation
 		public Rank Rank;
 
 		/// <summary>
-		/// Whether the card is flipped (invisible).
+		/// The suit of the card.
 		/// </summary>
-		public bool Flipped;
+		public Suit Suit;
 
 		/// <summary>
 		/// Creates a new card.
@@ -81,10 +68,15 @@ namespace Klondike_Solitaire_Simulation
 		/// <param name="original">The card to copy.</param>
 		public Card(Card original)
 		{
-			Suit = (Suit)Enum.Parse(typeof(Suit), original.Suit.ToString());
-			Rank = (Rank)Enum.Parse(typeof(Rank), original.Rank.ToString());
+			Suit = (Suit) Enum.Parse(typeof(Suit), original.Suit.ToString());
+			Rank = (Rank) Enum.Parse(typeof(Rank), original.Rank.ToString());
 			Flipped = original.Flipped;
 		}
+
+		/// <summary>
+		/// The color of the current suit.
+		/// </summary>
+		public Color Color => Suit == Spades || Suit == Clubs ? Color.Black : Color.Red;
 
 		/// <summary>
 		/// Flips the card.
@@ -102,36 +94,36 @@ namespace Klondike_Solitaire_Simulation
 		/// <returns>A string representation of the card.</returns>
 		public override string ToString()
 		{
-			if (UseShorthand)
+			int rankNumber = (int) Rank + 1;
+			string rankLetter = Rank.ToString()[0].ToString();
+			string suitLetter = "";
+			switch (Suit)
 			{
-				int rankNumber = (int)Rank + 1;
-				string rankLetter = Rank.ToString()[0].ToString();
-				string suitLetter = "";
-				switch (Suit)
-				{
-					case Clubs:
-						suitLetter = "♣";
-						break;
+				case Clubs:
+					suitLetter = "♣";
+					break;
 
-					case Diamonds:
-						suitLetter = "♦";
-						break;
+				case Diamonds:
+					suitLetter = "♦";
+					break;
 
-					case Hearts:
-						suitLetter = "♥";
-						break;
+				case Hearts:
+					suitLetter = "♥";
+					break;
 
-					case Spades:
-						suitLetter = "♠";
-						break;
-				}
-
-				return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
+				case Spades:
+					suitLetter = "♠";
+					break;
 			}
-			else
-			{
-				return Rank + " of " + Suit + " (" + (Flipped ? "flipped" : "normal") + ")";
-			}
+
+			return (Flipped ? "[" : "") + (rankNumber == 1 || rankNumber > 10 ? rankLetter : rankNumber.ToString()) + suitLetter + (Flipped ? "]" : "");
 		}
-	}
+
+        public bool OppositeColor(Suit otherSuit)
+        {
+            return ((Suit == Diamonds || Suit == Hearts) && (otherSuit == Spades || otherSuit == Clubs)) || 
+                ((Suit == Clubs || Suit == Spades) && (otherSuit == Diamonds || otherSuit == Hearts));
+        }
+
+    }
 }

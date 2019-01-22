@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Klondike_Solitaire_Simulation.Stacks
+﻿namespace Klondike_Solitaire_Simulation.Stacks
 {
 	public class FoundationCardStack : CardStack
 	{
+		/// <inheritdoc />
 		/// <summary>
 		/// Creates a new foundation stack.
 		/// </summary>
@@ -15,6 +10,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Copies the foundation stack.
 		/// </summary>
@@ -23,6 +19,7 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		{
 		}
 
+		/// <inheritdoc />
 		/// <summary>
 		/// Checks if a move is possible given a card.
 		/// </summary>
@@ -31,12 +28,12 @@ namespace Klondike_Solitaire_Simulation.Stacks
 		public override bool CanPlaceCardOnTop(Card card)
 		{
 			// First check if the foundation is empty
-			if (IsEmpty())
+			if (IsEmpty)
 			{
 				// If it's empty, the card only needs to be an ace
 				return card.Rank == Rank.Ace;
 			}
-			else if (IsFull())
+			else if (IsFull)
 			{
 				return false;
 			}
